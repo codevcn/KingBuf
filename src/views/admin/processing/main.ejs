@@ -26,7 +26,7 @@
           <p><%= booking.Cus_Phone %></p>
         </div>
         <div class="form-group date-time">
-          <label>Thời gian đặt</label>
+          <label>Thời gian đến</label>
           <p><%= booking.ArrivalTime %></p>
         </div>
         <div class="form-group note">
@@ -83,6 +83,32 @@
         </p>
       </div>
       <% } %>
+      <section id="cancel-booking">
+        <button type="button" class="open-cancel-booking-btn">
+          <i class="bi bi-trash"></i>
+          <span>Hủy đơn</span>
+        </button>
+
+        <form id="cancel-booking-form" hidden>
+          <div class="form-group">
+            <label for="cancel-reject-input">Lý do hủy đơn</label>
+            <textarea id="cancel-booking-input" rows="3" placeholder="Nhập lý do hủy đơn ở đây..."></textarea>
+          </div>
+
+          <div class="confirm-cancel-booking">
+            <span></span>
+            <div class="btns">
+              <button type="button" class="cancel-btn">
+                <span>Thoát</span>
+              </button>
+              <button type="submit" class="submit-btn">
+                <i class="bi bi-check-all"></i>
+                <span>Xác nhận hủy đơn</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
     </section>
     <% } else if (booking.Status === 'Rejected') { %>
     <section class="processed-booking">
@@ -125,13 +151,6 @@
         </li>
 
         <li class="nav-item" role="presentation">
-          <button class="nav-link" id="cancel-tab" data-bs-toggle="tab" data-bs-target="#cancel-tab-pane" type="button" role="tab">
-            <i class="bi bi-x-lg"></i>
-            <span>Hủy đơn</span>
-          </button>
-        </li>
-
-        <li class="nav-item" role="presentation">
           <button class="nav-link active" id="approve-tab" data-bs-toggle="tab" data-bs-target="#approve-tab-pane" type="button" role="tab">
             <i class="bi bi-check-circle-fill"></i>
             <span>Duyệt đơn</span>
@@ -141,35 +160,10 @@
 
       <div class="tab-content">
         <div class="tab-pane fade" id="reject-tab-pane" role="tabpanel" tabindex="0" data-kb-tab-type="reject">
-          <form class="reject-cancel-form">
+          <form class="reject-form">
             <div class="form-group">
               <label for="cancel-reject-input">Lý do từ chối đơn</label>
               <textarea id="reject-booking-input" rows="3" placeholder="Nhập lý do từ chối đơn ở đây..."></textarea>
-            </div>
-          </form>
-
-          <section hidden class="processing-result">
-            <div class="result-title">
-              <i class="bi bi-exclamation-triangle-fill"></i>
-              <span>Xử lý đơn thất bại</span>
-            </div>
-            <p class="result-message"></p>
-          </section>
-
-          <div class="complete-processing">
-            <span></span>
-            <button class="submit-btn">
-              <i class="bi bi-check-all"></i>
-              <span>Hoàn tất xử lý đơn</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="tab-pane fade" id="cancel-tab-pane" role="tabpanel" tabindex="0" data-kb-tab-type="cancel">
-          <form class="reject-cancel-form">
-            <div class="form-group">
-              <label for="cancel-reject-input">Lý do hủy đơn</label>
-              <textarea id="cancel-booking-input" rows="3" placeholder="Nhập lý do hủy đơn ở đây..."></textarea>
             </div>
           </form>
 
@@ -222,7 +216,7 @@
                     <% if (Status === 'Maintenance') { %>
                     <td>Đang bảo trì</td>
                     <% } else { %>
-                    <td>Khả dụng</td>
+                    <td>Còn trống</td>
                     <% } %>
                     <% if (Status !== 'Maintenance') { %>
                     <td>

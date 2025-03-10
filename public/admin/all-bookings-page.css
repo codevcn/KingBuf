@@ -184,6 +184,7 @@ footer p {
   padding: 6px 15px;
   text-decoration: none;
   border: 2px #1f2937 solid;
+  margin-top: 5px;
 }
 #main-section .result-section .booking-list .booking-card .booking-actions .actions .action-btn:hover {
   background-color: white;

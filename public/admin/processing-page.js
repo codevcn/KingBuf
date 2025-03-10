@@ -80,20 +80,25 @@ const rejectBooking = (type) => {
    }
 }
 
-const cancelBooking = (type) => {
+const cancelBooking = (e) => {
+   e.preventDefault()
    const reason = document.getElementById("cancel-booking-input").value
    if (validateReason(reason)) {
-      showApproveBookingLoading(true, type)
+      const submitBtn = document.querySelector(
+         "#cancel-booking-form .confirm-cancel-booking .submit-btn"
+      )
+      const backupContent = submitBtn.innerHTML
+      submitBtn.innerHTML = createLoading()
       processBookingService
          .cancelBooking(getBookingId(), reason)
          .then(() => {
             reloadPage()
          })
          .catch((error) => {
-            showError(error.message, type)
+            toaster.error(error.message)
          })
          .finally(() => {
-            showApproveBookingLoading(false, type)
+            submitBtn.innerHTML = backupContent
          })
    }
 }
@@ -114,31 +119,40 @@ const completeProcessBooking = (e) => {
    }
 }
 
-const init = () => {
-   const approveBookingCheckboxes = approveBookingSection.querySelectorAll(
-      ".restaurant-tables table tbody tr .form-check .form-check-input"
-   )
-   for (const checkbox of approveBookingCheckboxes) {
-      checkbox.addEventListener("click", (e) => {
-         e.stopPropagation()
-      })
-      checkbox.addEventListener("change", (e) => {
-         const tableId = checkbox.value
-         if (checkbox.checked) {
-            processBookingShares.pickTable(tableId)
-         } else {
-            processBookingShares.unpickTable(tableId)
-         }
-      })
-   }
+const openCancelBookingForm = () => {
+   const cancelBookingForm = document.getElementById("cancel-booking-form")
+   const openCancelBookingBtn = document.querySelector("#cancel-booking .open-cancel-booking-btn")
+   openCancelBookingBtn.hidden = !openCancelBookingBtn.hidden
+   cancelBookingForm.hidden = !cancelBookingForm.hidden
+}
 
-   const approveBookingTableRows = approveBookingSection.querySelectorAll(
-      ".restaurant-tables table tbody tr"
-   )
-   for (const tableRow of approveBookingTableRows) {
-      tableRow.addEventListener("click", (e) => {
-         tableRow.querySelector(".form-check-input").click()
-      })
+const init = () => {
+   if (approveBookingSection) {
+      const approveBookingCheckboxes = approveBookingSection.querySelectorAll(
+         ".restaurant-tables table tbody tr .form-check .form-check-input"
+      )
+      for (const checkbox of approveBookingCheckboxes) {
+         checkbox.addEventListener("click", (e) => {
+            e.stopPropagation()
+         })
+         checkbox.addEventListener("change", (e) => {
+            const tableId = checkbox.value
+            if (checkbox.checked) {
+               processBookingShares.pickTable(tableId)
+            } else {
+               processBookingShares.unpickTable(tableId)
+            }
+         })
+      }
+
+      const approveBookingTableRows = approveBookingSection.querySelectorAll(
+         ".restaurant-tables table tbody tr"
+      )
+      for (const tableRow of approveBookingTableRows) {
+         tableRow.addEventListener("click", (e) => {
+            tableRow.querySelector(".form-check-input").click()
+         })
+      }
    }
 
    const completeProcessingBtns = document.querySelectorAll(
@@ -147,5 +161,13 @@ const init = () => {
    for (const btn of completeProcessingBtns) {
       btn.addEventListener("click", completeProcessBooking)
    }
+
+   document
+      .querySelector("#cancel-booking .open-cancel-booking-btn")
+      .addEventListener("click", openCancelBookingForm)
+   document.getElementById("cancel-booking-form").addEventListener("submit", cancelBooking)
+   document
+      .querySelector("#cancel-booking-form .confirm-cancel-booking .cancel-btn")
+      .addEventListener("click", openCancelBookingForm)
 }
 init()

@@ -747,7 +747,7 @@ export const getProcessingPage = (req, res, next) => {
       },
    ]
    res.render("admin/processing/processing-page", {
-      booking: bookings[2],
+      booking: bookings[0],
       emptyTables,
       isAdmin: true,
    })

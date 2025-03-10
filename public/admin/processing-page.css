@@ -217,35 +217,27 @@ footer p {
   color: white;
   margin: 0 auto;
 }
-#booking-processing .processing .tab-content .reject-cancel-form .form-group.warning input,
-#booking-processing .processing .tab-content .reject-cancel-form .form-group.warning textarea {
-  border-color: red;
-  outline: 1px red solid;
-}
-#booking-processing .processing .tab-content .reject-cancel-form .form-group.warning .message {
-  display: flex;
-}
-#booking-processing .processing .tab-content .reject-cancel-form .form-group label {
+#booking-processing .processing .tab-content .reject-form .form-group label {
   display: block;
   color: #4b5563;
   font-weight: 600;
   margin-bottom: 0.3rem;
   padding-left: 5px;
 }
-#booking-processing .processing .tab-content .reject-cancel-form .form-group input,
-#booking-processing .processing .tab-content .reject-cancel-form .form-group textarea {
+#booking-processing .processing .tab-content .reject-form .form-group input,
+#booking-processing .processing .tab-content .reject-form .form-group textarea {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   outline: none;
 }
-#booking-processing .processing .tab-content .reject-cancel-form .form-group input:focus,
-#booking-processing .processing .tab-content .reject-cancel-form .form-group textarea:focus {
+#booking-processing .processing .tab-content .reject-form .form-group input:focus,
+#booking-processing .processing .tab-content .reject-form .form-group textarea:focus {
   border-color: #eab308;
   box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.5);
 }
-#booking-processing .processing .tab-content .reject-cancel-form .form-group .message {
+#booking-processing .processing .tab-content .reject-form .form-group .message {
   display: none;
   column-gap: 5px;
   color: red;
@@ -292,6 +284,100 @@ footer p {
 }
 #booking-processing .processed-booking .form-group p.empty {
   color: rgba(128, 128, 128, 0.552);
+}
+
+#cancel-booking {
+  margin-top: 20px;
+}
+#cancel-booking .open-cancel-booking-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 4px;
+  background-color: #eab308;
+  font-weight: bold;
+  font-size: 1rem;
+  border: 2px #eab308 solid;
+}
+#cancel-booking .open-cancel-booking-btn:hover {
+  background-color: white;
+  color: #1f2937;
+}
+#cancel-booking .form-group label {
+  display: block;
+  color: #4b5563;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  padding-left: 5px;
+}
+#cancel-booking .form-group input,
+#cancel-booking .form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  outline: none;
+}
+#cancel-booking .form-group input:focus,
+#cancel-booking .form-group textarea:focus {
+  border-color: #eab308;
+  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.5);
+}
+#cancel-booking .confirm-cancel-booking {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+#cancel-booking .confirm-cancel-booking .btns {
+  display: flex;
+  gap: 10px;
+}
+#cancel-booking .confirm-cancel-booking .btns .cancel-btn {
+  color: #1f2937;
+  font-weight: bold;
+  padding: 4px 15px;
+  border-radius: 6px;
+  border: none;
+  background-color: #1f2937;
+  border: 2px #1f2937 solid;
+  color: white;
+}
+#cancel-booking .confirm-cancel-booking .btns .cancel-btn:hover {
+  color: black;
+  background-color: white;
+}
+#cancel-booking .confirm-cancel-booking .btns .cancel-btn:hover .spinner-border {
+  color: #ca8a04;
+}
+#cancel-booking .confirm-cancel-booking .btns .submit-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 6px;
+  padding: 6px 15px;
+  color: white;
+  font-weight: bold;
+  border: 2px #eab308 solid;
+  background-color: #eab308;
+}
+#cancel-booking .confirm-cancel-booking .btns .submit-btn i {
+  font-size: 1.2rem;
+}
+#cancel-booking .confirm-cancel-booking .btns .submit-btn:hover {
+  color: black;
+  background-color: white;
+}
+#cancel-booking .confirm-cancel-booking .btns .submit-btn:hover .spinner-border {
+  color: #ca8a04;
+}
+#cancel-booking .confirm-cancel-booking .btns .submit-btn .spinner-border {
+  display: flex;
+  height: 19.2px;
+  width: 19.2px;
+  color: white;
+  margin: 0 auto;
 }
 
 #approve-booking label {

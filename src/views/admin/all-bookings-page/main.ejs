@@ -30,7 +30,7 @@
         <div class="card-info">
           <p><strong>Họ tên:</strong> <%= Cus_FullName %></p>
           <p><strong>Số điện thoại:</strong> <%= Cus_Phone %></p>
-          <p><strong>Giờ đặt:</strong> <%= ArrivalTime %></p>
+          <p><strong>Thời gian đến:</strong> <%= ArrivalTime %></p>
           <p><strong>Người lớn:</strong> <%= NumAdults %>, <strong>Trẻ em:</strong> <%= NumChildren %></p>
           <p><strong>Ghi chú:</strong> <%= Note || "Không có" %></p>
           <p><strong>Ngày tạo đơn:</strong> <%= CreatedAt %></p>
@@ -47,13 +47,18 @@
           <% }) %>
         </div>
         <% } %>
-        <% if (Status === 'Pending') { %>
+        <% if (Status === 'Pending' || Status === 'Approved') { %>
         <div class="booking-actions">
           <span></span>
           <div class="actions">
             <a class="action-btn" href="/admin/processing/<%= ReservationID %>">
+              <% if (Status === 'Pending') { %>
               <span>Xử lý đơn</span>
               <i class="bi bi-arrow-right-circle"></i>
+              <% } else if (Status === 'Approved') { %>
+              <span>Hủy đơn</span>
+              <i class="bi bi-trash"></i>
+              <% } %>
             </a>
           </div>
         </div>
