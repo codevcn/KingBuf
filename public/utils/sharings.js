@@ -33,3 +33,19 @@ class Toaster {
 }
 
 const toaster = new Toaster()
+
+class ProcessBookingShares {
+   constructor() {
+      this.pickedTables = []
+   }
+
+   pickTable(...tableIds) {
+      this.pickedTables.push(...tableIds)
+   }
+
+   unpickTable(...tableIds) {
+      this.pickedTables = this.pickedTables.filter((id) => !tableIds.includes(id))
+   }
+}
+
+const processBookingShares = new ProcessBookingShares()

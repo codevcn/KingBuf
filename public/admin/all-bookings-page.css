@@ -29,10 +29,12 @@ header {
   padding-left: 50px;
   padding-right: 50px;
 }
-header h1 {
+header .app-title {
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
+  text-decoration: none;
+  color: white;
 }
 header nav ul {
   display: flex;
@@ -158,6 +160,34 @@ footer p {
   padding: 5px 10px;
   font-weight: bold;
   margin-top: 10px;
+}
+#main-section .result-section .booking-list .booking-card .booking-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+#main-section .result-section .booking-list .booking-card .booking-actions .actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#main-section .result-section .booking-list .booking-card .booking-actions .actions .action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 6px;
+  background-color: #1f2937;
+  color: white;
+  outline: none;
+  border: none;
+  padding: 6px 15px;
+  text-decoration: none;
+  border: 2px #1f2937 solid;
+}
+#main-section .result-section .booking-list .booking-card .booking-actions .actions .action-btn:hover {
+  background-color: white;
+  color: #1f2937;
 }
 #main-section .result-section .empty-result {
   display: flex;

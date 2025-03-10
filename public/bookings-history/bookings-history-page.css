@@ -29,10 +29,12 @@ header {
   padding-left: 50px;
   padding-right: 50px;
 }
-header h1 {
+header .app-title {
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
+  text-decoration: none;
+  color: white;
 }
 header nav ul {
   display: flex;
@@ -106,6 +108,9 @@ footer p {
 #main-section .search-form button:hover {
   background-color: #eab308;
 }
+#main-section .search-form button:hover .spinner-border {
+  color: #ca8a04;
+}
 #main-section .search-form button .spinner-border {
   display: flex;
   height: 18.4px;
@@ -166,7 +171,7 @@ footer p {
 #main-section .result-section .booking-list .booking-card .card-info p {
   margin: 5px 0;
 }
-#main-section .result-section .booking-list .booking-card .reject-reason {
+#main-section .result-section .booking-list .booking-card .reason {
   color: red;
   background-color: rgba(255, 0, 0, 0.1607843137);
   border-radius: 5px;

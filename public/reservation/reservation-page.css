@@ -29,10 +29,12 @@ header {
   padding-left: 50px;
   padding-right: 50px;
 }
-header h1 {
+header .app-title {
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
+  text-decoration: none;
+  color: white;
 }
 header nav ul {
   display: flex;

@@ -1,5 +1,5 @@
 export const getReservationPage = (req, res, next) => {
-   res.render("reservation/reservation-page")
+   res.render("reservation/reservation-page", { isAdmin: true })
 }
 
 export const getBookingsHistoryPage = (req, res, next) => {
@@ -304,7 +304,7 @@ export const getBookingsHistoryPage = (req, res, next) => {
          TablesList: [{ TableNumber: 8 }],
       },
    ]
-   res.render("bookings-history/bookings-history-page", { bookings })
+   res.render("bookings-history/bookings-history-page", { bookings, isAdmin: true })
 }
 
 export const getAdminLoginPage = (req, res, next) => {
@@ -613,5 +613,142 @@ export const getAdminAllBookingsPage = (req, res, next) => {
          TablesList: [{ TableNumber: 8 }],
       },
    ]
-   res.render("admin/all-bookings-page/all-bookings-page", { bookings })
+   res.render("admin/all-bookings-page/all-bookings-page", { bookings, isAdmin: true })
+}
+
+export const getProcessingPage = (req, res, next) => {
+   const bookings = [
+      {
+         ReservationID: 25,
+         Cus_FullName: "Đỗ Minh E",
+         Cus_Phone: "0945566778",
+         ArrivalTime: "2025-07-21T14:32:10.234Z",
+         CreatedAt: "2025-07-21T14:32:10.234Z",
+         NumAdults: 6,
+         NumChildren: 2,
+         Note: "Yêu cầu bàn gần cửa sổ. Tôi muốn một không gian tiện nghi thoáng mát, sàn nhà có hơi mùi muối biển, ngồi ăn có thể vừa hít khí biển vừa thưởng thức cái nóng của biển và cây cối xung quanh cũng phải xếp hàng và được cắt tỉa gọn gàng.",
+         Status: "Approved",
+         TablesList: [{ TableNumber: 8 }],
+      },
+      {
+         ReservationID: 22,
+         Cus_FullName: "Trần Thị B",
+         Cus_Phone: "0971122334",
+         ArrivalTime: "2025-07-21T14:32:10.234Z",
+         CreatedAt: "2025-07-21T14:32:10.234Z",
+         NumAdults: 4,
+         NumChildren: 2,
+         Note: "Có ghế trẻ em",
+         Status: "Cancelled",
+         Reason: "Quan ngại về khách hàng 1",
+      },
+      {
+         ReservationID: 13,
+         Cus_FullName: "Hà Văn M",
+         Cus_Phone: "0862233445",
+         ArrivalTime: "2025-07-21T14:32:10.234Z",
+         CreatedAt: "2025-07-21T14:32:10.234Z",
+         NumAdults: 3,
+         NumChildren: 2,
+         Note: "Có menu đặc biệt",
+         Status: "Pending",
+      },
+      {
+         ReservationID: 10,
+         Cus_FullName: "Đặng Thị J",
+         Cus_Phone: "0896677889",
+         ArrivalTime: "2025-07-21T14:32:10.234Z",
+         CreatedAt: "2025-07-21T14:32:10.234Z",
+         NumAdults: 6,
+         NumChildren: 2,
+         Note: "Có bánh sinh nhật",
+         Status: "Rejected",
+         Reason: "Quan ngại về khách hàng 2",
+      },
+   ]
+
+   const emptyTables = [
+      {
+         TableID: 1,
+         TableNumber: 1,
+         Capacity: 2,
+         Location: "Sảnh chính",
+         Status: "Maintenance",
+      },
+      {
+         TableID: 2,
+         TableNumber: 2,
+         Capacity: 4,
+         Location: "Sảnh 1",
+         Status: "Available",
+      },
+      {
+         TableID: 3,
+         TableNumber: 3,
+         Capacity: 6,
+         Location: "Sảnh 3",
+         Status: "Available",
+      },
+      {
+         TableID: 4,
+         TableNumber: 4,
+         Capacity: 2,
+         Location: "Ban công",
+         Status: "Available",
+      },
+      {
+         TableID: 5,
+         TableNumber: 5,
+         Capacity: 8,
+         Location: "Sân thượng",
+         Status: "Reserved",
+      },
+      {
+         TableID: 6,
+         TableNumber: 6,
+         Capacity: 4,
+         Location: "Sảnh 2",
+         Status: "Available",
+      },
+      {
+         TableID: 7,
+         TableNumber: 7,
+         Capacity: 10,
+         Location: "Sảnh chính",
+         Status: "Available",
+      },
+      {
+         TableID: 8,
+         TableNumber: 8,
+         Capacity: 2,
+         Location: "Khu sân vườn",
+         Status: "Available",
+      },
+      {
+         TableID: 9,
+         TableNumber: 9,
+         Capacity: 6,
+         Location: "Sảnh 1",
+         Status: "Maintenance",
+      },
+      {
+         TableID: 10,
+         TableNumber: 10,
+         Capacity: 4,
+         Location: "Tầng thượng",
+         Status: "Available",
+      },
+      {
+         TableID: 11,
+         TableNumber: 11,
+         Capacity: 12,
+         Location: "Sảnh VIP",
+         Status: "Maintenance",
+      },
+   ]
+   res.render("admin/processing/processing-page", {
+      booking: bookings[2],
+      emptyTables,
+      isAdmin: true,
+   })
 }

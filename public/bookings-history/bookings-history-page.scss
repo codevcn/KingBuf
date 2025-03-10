@@ -45,6 +45,10 @@
 
          &:hover {
             background-color: gs.$primary-color; // primary-hover
+
+            .spinner-border {
+               color: gs.$primary-hover;
+            }
          }
 
          .spinner-border {
@@ -118,7 +122,7 @@
                }
             }
 
-            .reject-reason {
+            .reason {
                color: red;
                background-color: #ff000029;
                border-radius: 5px;

@@ -31,3 +31,7 @@ function navigateWithPayload(href, params) {
    const queryString = new URLSearchParams(params).toString()
    window.location.href = queryString ? `${href}?${queryString}` : href
 }
+
+function reloadPage() {
+   window.location.reload()
+}
