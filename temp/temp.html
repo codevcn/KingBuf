@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng nhập - Đặt chỗ nhà hàng</title>
+  <title>User Account - Đặt chỗ nhà hàng</title>
   <style>
     /* SCSS Variables */
     $primary-color: #eab308;
@@ -26,110 +26,101 @@
       min-height: 100vh;
     }
 
-    .login-container {
+    .account-container {
       background-color: $light-bg;
       color: $dark-bg;
       padding: 2rem;
       border-radius: 0.5rem;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       width: 100%;
-      max-width: 400px;
+      max-width: 600px;
 
       h1 {
         text-align: center;
-        font-size: 1.5rem;
+        font-size: 1.75rem;
         margin-bottom: 1.5rem;
         color: $primary-color;
       }
 
-      .form-group {
-        position: relative;
-        /* Để định vị nút show/hide */
-        margin-bottom: 1rem;
+      .section {
+        margin-bottom: 2rem;
 
-        label {
-          display: block;
-          margin-bottom: 0.5rem;
-          font-weight: bold;
+        h2 {
+          font-size: 1.25rem;
           color: $gray;
+          margin-bottom: 1rem;
         }
 
-        input {
-          width: 100%;
-          padding: 0.75rem;
-          border: 1px solid $gray;
+        p {
+          margin: 0.5rem 0;
+          line-height: 1.5;
+        }
+
+        button {
+          background-color: $primary-color;
+          color: $light-bg;
+          border: none;
+          padding: 0.75rem 1rem;
           border-radius: 0.25rem;
           font-size: 1rem;
-          transition: border-color 0.3s ease;
-
-          &:focus {
-            border-color: $primary-color;
-            outline: none;
-          }
-        }
-
-        button.toggle-password {
-          position: absolute;
-          right: 0.75rem;
-          top: 50%;
-          transform: translateY(-50%);
-          background: none;
-          border: none;
-          color: $gray;
           cursor: pointer;
-          font-size: 0.875rem;
-          transition: color 0.3s ease;
+          transition: background-color 0.3s ease;
 
           &:hover {
-            color: $primary-color;
+            background-color: $primary-hover;
           }
         }
       }
 
-      button.submit {
-        width: 100%;
-        padding: 0.75rem;
-        background-color: $primary-color;
-        color: $light-bg;
-        border: none;
-        border-radius: 0.25rem;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+      .profile-info {
+        display: flex;
+        flex-direction: column;
 
-        &:hover {
-          background-color: $primary-hover;
+        .info-item {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 0.5rem;
+
+          span.label {
+            font-weight: bold;
+            color: $gray;
+          }
+
+          span.value {
+            color: $dark-bg;
+          }
         }
       }
 
-      .forgot-password {
-        display: block;
-        text-align: right;
-        margin-top: 0.5rem;
-        color: $primary-color;
-        text-decoration: none;
-        font-size: 0.875rem;
-        transition: color 0.3s ease;
+      .booking-history {
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 1rem;
 
-        &:hover {
-          color: $primary-hover;
+          th,
+          td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid $gray;
+          }
+
+          th {
+            color: $gray;
+            font-weight: bold;
+          }
+
+          td {
+            color: $dark-bg;
+          }
         }
       }
 
-      .signup-link {
+      .edit-profile {
         text-align: center;
-        margin-top: 1rem;
-        font-size: 0.875rem;
 
-        a {
-          color: $success-color;
-          text-decoration: none;
-          transition: color 0.3s ease;
-
-          &:hover {
-            color: darken($success-color, 10%);
-          }
+        button {
+          margin-top: 1rem;
         }
       }
     }
@@ -137,43 +128,58 @@
 </head>
 
 <body>
-  <div class="login-container">
-    <h1>Đăng nhập</h1>
-    <form>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Nhập email của bạn">
+  <div class="account-container">
+    <h1>Tài khoản của tôi</h1>
+
+    <!-- Profile Information -->
+    <div class="section profile-info">
+      <h2>Thông tin cá nhân</h2>
+      <div class="info-item">
+        <span class="label">Họ và tên:</span>
+        <span class="value">Nguyễn Văn A</span>
       </div>
-      <div class="form-group">
-        <label for="password">Mật khẩu</label>
-        <input type="password" id="password" placeholder="Nhập mật khẩu">
-        <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
-          Hiển thị
-        </button>
+      <div class="info-item">
+        <span class="label">Email:</span>
+        <span class="value">nguyenvana@example.com</span>
       </div>
-      <button type="submit" class="submit">Đăng nhập</button>
-      <a href="#" class="forgot-password">Quên mật khẩu?</a>
-    </form>
-    <div class="signup-link">
-      Chưa có tài khoản? <a href="#">Đăng ký ngay</a>
+      <div class="info-item">
+        <span class="label">Số điện thoại:</span>
+        <span class="value">0123456789</span>
+      </div>
+      <div class="edit-profile">
+        <button onclick="alert('Chức năng chỉnh sửa đang được phát triển!')">Chỉnh sửa thông tin</button>
+      </div>
+    </div>
+
+    <!-- Booking History -->
+    <div class="section booking-history">
+      <h2>Lịch sử đặt chỗ</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Ngày đặt</th>
+            <th>Nhà hàng</th>
+            <th>Số người</th>
+            <th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2023-10-15</td>
+            <td>King BBQ Buffet</td>
+            <td>4 người</td>
+            <td><span style="color: $success-color;">Đã xác nhận</span></td>
+          </tr>
+          <tr>
+            <td>2023-10-10</td>
+            <td>Hotpot Story</td>
+            <td>2 người</td>
+            <td><span style="color: $gray;">Đã hủy</span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <script>
-    // Function to toggle password visibility
-    function togglePasswordVisibility() {
-      const passwordField = document.getElementById('password');
-      const toggleButton = document.querySelector('.toggle-password');
-
-      if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        toggleButton.textContent = 'Ẩn';
-      } else {
-        passwordField.type = 'password';
-        toggleButton.textContent = 'Hiển thị';
-      }
-    }
-  </script>
 </body>
 
 </html>

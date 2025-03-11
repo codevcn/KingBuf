@@ -55,3 +55,23 @@ class ProcessBookingService {
 }
 
 const processBookingService = new ProcessBookingService()
+
+class TablesService {
+   async addNewTable(data) {
+      await new Promise((resolve, reject) => {
+         setTimeout(() => {
+            reject(new Error("something went vcn error!!"))
+         }, 1000)
+      })
+   }
+
+   async deleteTable(tableId) {
+      await new Promise((resolve, reject) => {
+         setTimeout(() => {
+            reject(new Error("something went vcn error!!"))
+         }, 1000)
+      })
+   }
+}
+
+const tablesService = new TablesService()

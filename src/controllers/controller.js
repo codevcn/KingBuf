@@ -1014,3 +1014,86 @@ export const getDueDateBookings = (req, res, next) => {
    ]
    res.render("admin/due-date-bookings/due-date-bookings-page", { bookings, isAdmin: true })
 }
+
+export const getAllTablesPage = (req, res, next) => {
+   const tables = [
+      {
+         TableID: 1,
+         TableNumber: 1,
+         Capacity: 2,
+         Location: "Sảnh chính",
+         Status: "Maintenance",
+      },
+      {
+         TableID: 2,
+         TableNumber: 2,
+         Capacity: 4,
+         Location: "Sảnh 1",
+         Status: "Available",
+      },
+      {
+         TableID: 3,
+         TableNumber: 3,
+         Capacity: 6,
+         Location: "Sảnh 3",
+         Status: "Available",
+      },
+      {
+         TableID: 4,
+         TableNumber: 4,
+         Capacity: 2,
+         Location: "Ban công",
+         Status: "Available",
+      },
+      {
+         TableID: 5,
+         TableNumber: 5,
+         Capacity: 8,
+         Location: "Sân thượng",
+         Status: "Reserved",
+      },
+      {
+         TableID: 6,
+         TableNumber: 6,
+         Capacity: 4,
+         Location: "Sảnh 2",
+         Status: "Available",
+      },
+      {
+         TableID: 7,
+         TableNumber: 7,
+         Capacity: 10,
+         Location: "Sảnh chính",
+         Status: "Available",
+      },
+      {
+         TableID: 8,
+         TableNumber: 8,
+         Capacity: 2,
+         Location: "Khu sân vườn",
+         Status: "Available",
+      },
+      {
+         TableID: 9,
+         TableNumber: 9,
+         Capacity: 6,
+         Location: "Sảnh 1",
+         Status: "Maintenance",
+      },
+      {
+         TableID: 10,
+         TableNumber: 10,
+         Capacity: 4,
+         Location: "Tầng thượng",
+         Status: "Available",
+      },
+      {
+         TableID: 11,
+         TableNumber: 11,
+         Capacity: 12,
+         Location: "Sảnh VIP",
+         Status: "Maintenance",
+      },
+   ]
+   return res.render("admin/all-tables/all-tables-page", { tables, isAdmin: true })
+}

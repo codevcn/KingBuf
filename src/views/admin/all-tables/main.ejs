@@ -1,0 +1,155 @@
+<main id="main-section">
+  <section class="title-section">
+    <h3>Tất cả các đơn đặt bàn</h3>
+  </section>
+
+  <div class="actions">
+    <button class="action" data-bs-toggle="modal" data-bs-target="#add-table-modal">
+      <i class="bi bi-plus-lg"></i>
+      <span>Thêm bàn mới</span>
+    </button>
+  </div>
+
+  <div id="restaurant-tables">
+    <table>
+      <thead>
+        <tr>
+          <th>Số hiệu</th>
+          <th>Sức chứa (người)</th>
+          <th>Vị trí</th>
+          <th>Trạng thái</th>
+          <th>Chọn bàn</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% tables.forEach(({TableID,TableNumber,Capacity,Location,Status}) => { %>
+        <tr class="<%= Status === 'Maintenance' ? 'maintained' : '' %>">
+          <td><%= TableNumber %></td>
+          <td><%= Capacity %></td>
+          <td><%= Location %></td>
+          <% if (Status === 'Maintenance') { %>
+          <td>Đang bảo trì</td>
+          <% } else { %>
+          <td>Còn trống</td>
+          <% } %>
+          <td>
+            <div class="actions">
+              <button class="action delete" data-kb-table-id="<%= TableID %>">Xóa bàn</button>
+              <button class="action update" data-kb-table-id="<%= TableID %>">Cập nhật bàn</button>
+            </div>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<div class="modal fade" id="add-table-modal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Thêm bàn mới</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-new-table-form">
+          <div class="form-groups">
+            <div class="form-group table-number">
+              <label for="table-number-input">Số hiệu bàn</label>
+              <input id="table-number-input" name="table-number" placeholder="Nhập số hiệu bàn, ví dụ: 1">
+              <div class="message" hidden></div>
+            </div>
+            <div class="form-group capacity">
+              <label for="capacity-input">Sức chứa</label>
+              <input id="capacity-input" name="capacity" type="number" placeholder="Nhập sức chứa của bàn (số người)">
+              <div class="message" hidden></div>
+            </div>
+            <div class="form-group location">
+              <label for="location">Vị trí</label>
+              <input type="text" id="location" name="location" placeholder="Nhập vị trí của bàn, ví dụ: Sảnh VIP">
+              <div class="message" hidden></div>
+            </div>
+          </div>
+          <div class="submit-section">
+            <button type="submit" class="submit-btn" id="add-table-button">
+              <i class="bi bi-check-lg"></i>
+              <span>Thêm bàn</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="delete-table-modal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Xóa bàn</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <section id="confirm-delete-section">
+          <p class="notice"></p>
+          <div class="btns">
+            <button class="submit-btn">
+              <i class="bi bi-trash"></i>
+              <span>Xác nhận xóa bàn</span>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="update-table-modal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Thêm bàn mới</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="update-new-table-form">
+          <div class="form-groups">
+            <div class="form-group table-number">
+              <label for="table-number-input">Số hiệu bàn</label>
+              <input id="table-number-input" name="table-number" placeholder="Nhập số hiệu bàn, ví dụ: 1">
+              <div class="message" hidden></div>
+            </div>
+            <div class="form-group capacity">
+              <label for="capacity-input">Sức chứa</label>
+              <input id="capacity-input" name="capacity" type="number" placeholder="Nhập sức chứa của bàn (số người)">
+              <div class="message" hidden></div>
+            </div>
+            <div class="form-group location">
+              <label for="location">Vị trí</label>
+              <input type="text" id="location" name="location" placeholder="Nhập vị trí của bàn, ví dụ: Sảnh VIP">
+              <div class="message" hidden></div>
+            </div>
+            <div class="form-group location">
+              <label for="location">Trạng thái</label>
+              <div class="dropdown" id="table-status-select" data-kb-selected-status="">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                </button>
+                <ul class="dropdown-menu">
+                  <li><button class="dropdown-item" data-kb-table-status="Available">Còn trống</button></li>
+                  <li><button class="dropdown-item" data-kb-table-status="Maintenance">Bảo trì</button></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="submit-section">
+            <button type="submit" class="submit-btn" id="update-table-button">
+              <i class="bi bi-check-lg"></i>
+              <span>Thêm bàn</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

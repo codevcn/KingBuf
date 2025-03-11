@@ -35,3 +35,9 @@ function navigateWithPayload(href, params) {
 function reloadPage() {
    window.location.reload()
 }
+
+function checkIsInteger(inputStr) {
+   console.log(">>> res:", inputStr)
+   console.log(">>> res:", /^-?\d+$/.test(inputStr))
+   return /^-?\d+$/.test(inputStr)
+}

@@ -21,36 +21,36 @@
       <form id="update-booking-form">
         <div class="form-groups">
           <div class="form-group full-name">
-            <label>Họ và tên người đặt</label>
-            <input value="<%= booking.Cus_FullName %>" name="fullname" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <label for="fullname-input">Họ và tên người đặt</label>
+            <input value="<%= booking.Cus_FullName %>" id="fullname-input" name="fullname" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
           </div>
           <div class="form-group phone">
-            <label>Số điện thoại người đặt</label>
-            <input value="<%= booking.Cus_Phone %>" name="phone" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <label for="phone-input">Số điện thoại người đặt</label>
+            <input value="<%= booking.Cus_Phone %>" id="phone-input" name="phone" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
           </div>
           <div class="form-group date">
             <label for="date-input">Ngày đến</label>
             <input type="date" id="date-input" name="date" value="<%= booking.date %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
           </div>
           <div class="form-group time">
-            <label for="time-inp">Giờ đến</label>
-            <input type="time" id="time-inp" name="time" value="<%= booking.time %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <label for="time-input">Giờ đến</label>
+            <input type="time" id="time-input" name="time" value="<%= booking.time %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
           </div>
           <div class="form-group note">
-            <label>Ghi chú</label>
-            <textarea rows="5" name="note" <%= booking.Status === 'Completed' ? 'disabled' : '' %>><%= booking.Note %></textarea>
+            <label for="note-input">Ghi chú</label>
+            <textarea rows="5" id="note-input" name="note" <%= booking.Status === 'Completed' ? 'disabled' : '' %>><%= booking.Note %></textarea>
           </div>
           <div class="form-group created-at">
             <label>Ngày tạo đơn</label>
             <p><%= booking.CreatedAt %></p>
           </div>
           <div class="form-group adults-count">
-            <label>Số người lớn</label>
-            <input value="<%= booking.NumAdults %>" name="adults-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <label for="adults-count-input">Số người lớn</label>
+            <input value="<%= booking.NumAdults %>" id="adults-count-input" name="adults-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
           </div>
           <div class="form-group children-count">
-            <label>Số trẻ em</label>
-            <input value="<%= booking.NumChildren %>" name="children-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <label for="children-count-input">Số trẻ em</label>
+            <input value="<%= booking.NumChildren %>" id="children-count-input" name="children-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
           </div>
           <div class="form-group status">
             <label>Trạng thái</label>
