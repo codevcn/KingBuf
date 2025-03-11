@@ -9,6 +9,8 @@
         <span class="status pending" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn hiện chưa được xử lý">Chưa được xử lý</span>
         <% } else if (booking.Status === 'Approved') { %>
         <span class="status approved" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn đã được xử lý">Đã duyệt</span>
+        <% } else if (booking.Status === 'Completed') { %>
+        <span class="status completed" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn đã được xử lý">Đã hoàn thành</span>
         <% } else if (booking.Status === 'Cancelled') { %>
         <span class="status cancelled" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn đã bị hủy">Đã hủy</span>
         <% } else { %>
@@ -16,64 +18,87 @@
         <% } %>
       </h3>
 
-      <div class="form-groups">
-        <div class="form-group full-name">
-          <label>Họ và tên người đặt</label>
-          <p><%= booking.Cus_FullName %></p>
+      <form id="update-booking-form">
+        <div class="form-groups">
+          <div class="form-group full-name">
+            <label>Họ và tên người đặt</label>
+            <input value="<%= booking.Cus_FullName %>" name="fullname" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+          </div>
+          <div class="form-group phone">
+            <label>Số điện thoại người đặt</label>
+            <input value="<%= booking.Cus_Phone %>" name="phone" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+          </div>
+          <div class="form-group date">
+            <label for="date-input">Ngày đến</label>
+            <input type="date" id="date-input" name="date" value="<%= booking.date %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+          </div>
+          <div class="form-group time">
+            <label for="time-inp">Giờ đến</label>
+            <input type="time" id="time-inp" name="time" value="<%= booking.time %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+          </div>
+          <div class="form-group note">
+            <label>Ghi chú</label>
+            <textarea rows="5" name="note" <%= booking.Status === 'Completed' ? 'disabled' : '' %>><%= booking.Note %></textarea>
+          </div>
+          <div class="form-group created-at">
+            <label>Ngày tạo đơn</label>
+            <p><%= booking.CreatedAt %></p>
+          </div>
+          <div class="form-group adults-count">
+            <label>Số người lớn</label>
+            <input value="<%= booking.NumAdults %>" name="adults-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+          </div>
+          <div class="form-group children-count">
+            <label>Số trẻ em</label>
+            <input value="<%= booking.NumChildren %>" name="children-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+          </div>
+          <div class="form-group status">
+            <label>Trạng thái</label>
+            <p>
+              <% if (booking.Status === 'Pending') { %>
+              Chưa được xử lý
+              <% } else if (booking.Status === 'Approved') { %>
+              Đã duyệt
+              <% } else if (booking.Status === 'Cancelled') { %>
+              Đã hủy
+              <% } else if (booking.Status === 'Completed') { %>
+              Đã hoàn thành
+              <% } else { %>
+              Đã từ chối
+              <% } %>
+            </p>
+          </div>
         </div>
-        <div class="form-group phone">
-          <label>Số điện thoại người đặt</label>
-          <p><%= booking.Cus_Phone %></p>
+        <% if (booking.Status !== 'Completed') { %>
+        <div class="btns">
+          <span></span>
+          <button type="submit" class="submit-btn">
+            <span>Cập nhật đơn</span>
+            <i class="bi bi-arrow-repeat"></i>
+          </button>
         </div>
-        <div class="form-group date-time">
-          <label>Thời gian đến</label>
-          <p><%= booking.ArrivalTime %></p>
-        </div>
-        <div class="form-group note">
-          <label>Ghi chú</label>
-          <p><%= booking.Note %></p>
-        </div>
-        <div class="form-group adults-count">
-          <label>Số người lớn</label>
-          <p><%= booking.NumAdults %></p>
-        </div>
-        <div class="form-group children-count">
-          <label>Số trẻ em</label>
-          <p><%= booking.NumChildren %></p>
-        </div>
-        <div class="form-group created-at">
-          <label>Ngày tạo đơn</label>
-          <p><%= booking.CreatedAt %></p>
-        </div>
-
-        <div class="form-group status">
-          <label>Trạng thái</label>
-          <p class="status">
-            <% if (booking.Status === 'Pending') { %>
-            Chưa được xử lý
-            <% } else if (booking.Status === 'Approved') { %>
-            Đã duyệt
-            <% } else if (booking.Status === 'Cancelled') { %>
-            Đã hủy
-            <% } else { %>
-            Đã từ chối
-            <% } %>
-          </p>
-        </div>
-      </div>
+        <% } %>
+      </form>
     </section>
   </section>
 
   <section id="booking-processing">
     <h3 class="top-title">Xử lý đơn</h3>
 
-    <% if (booking.Status === 'Approved') { %>
+    <% if (booking.Status === 'Approved' || booking.Status === 'Completed') { %>
     <section class="processed-booking">
       <% if (booking.TablesList && booking.TablesList.length > 0) { %>
+      <% if (booking.Status === 'Approved') { %>
       <div class="notice approved">
         <i class="bi bi-check2-circle"></i>
         <span>Đơn đã được xử lý</span>
       </div>
+      <% } else { %>
+      <div class="notice completed">
+        <i class="bi bi-clipboard2-check"></i>
+        <span>Đơn đã hoàn thành</span>
+      </div>
+      <% } %>
       <div class="form-group">
         <label>Danh sách bàn được gán cho đơn</label>
         <p>
@@ -83,32 +108,6 @@
         </p>
       </div>
       <% } %>
-      <section id="cancel-booking">
-        <button type="button" class="open-cancel-booking-btn">
-          <i class="bi bi-trash"></i>
-          <span>Hủy đơn</span>
-        </button>
-
-        <form id="cancel-booking-form" hidden>
-          <div class="form-group">
-            <label for="cancel-reject-input">Lý do hủy đơn</label>
-            <textarea id="cancel-booking-input" rows="3" placeholder="Nhập lý do hủy đơn ở đây..."></textarea>
-          </div>
-
-          <div class="confirm-cancel-booking">
-            <span></span>
-            <div class="btns">
-              <button type="button" class="cancel-btn">
-                <span>Thoát</span>
-              </button>
-              <button type="submit" class="submit-btn">
-                <i class="bi bi-check-all"></i>
-                <span>Xác nhận hủy đơn</span>
-              </button>
-            </div>
-          </div>
-        </form>
-      </section>
     </section>
     <% } else if (booking.Status === 'Rejected') { %>
     <section class="processed-booking">
@@ -262,4 +261,41 @@
     </section>
     <% } %>
   </section>
+
+  <% if (booking.Status === 'Approved') { %>
+  <section id="additional-processing">
+    <section id="complete-booking">
+      <button type="button" class="complete-booking-btn">
+        <i class="bi bi-clipboard2-check"></i>
+        <span>Hoàn thành đơn</span>
+      </button>
+    </section>
+    <section id="cancel-booking">
+      <button type="button" class="open-cancel-booking-btn">
+        <i class="bi bi-trash"></i>
+        <span>Hủy đơn</span>
+      </button>
+
+      <form id="cancel-booking-form" hidden>
+        <div class="form-group">
+          <label for="cancel-reject-input">Lý do hủy đơn</label>
+          <textarea id="cancel-booking-input" rows="3" placeholder="Nhập lý do hủy đơn ở đây..."></textarea>
+        </div>
+
+        <div class="confirm-cancel-booking">
+          <span></span>
+          <div class="btns">
+            <button type="button" class="cancel-btn">
+              <span>Thoát</span>
+            </button>
+            <button type="submit" class="submit-btn">
+              <i class="bi bi-check-all"></i>
+              <span>Xác nhận hủy đơn</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </section>
+  <% } %>
 </main>

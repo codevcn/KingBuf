@@ -84,9 +84,7 @@ const cancelBooking = (e) => {
    e.preventDefault()
    const reason = document.getElementById("cancel-booking-input").value
    if (validateReason(reason)) {
-      const submitBtn = document.querySelector(
-         "#cancel-booking-form .confirm-cancel-booking .submit-btn"
-      )
+      const submitBtn = e.target.querySelector(".submit-btn")
       const backupContent = submitBtn.innerHTML
       submitBtn.innerHTML = createLoading()
       processBookingService
@@ -103,15 +101,29 @@ const cancelBooking = (e) => {
    }
 }
 
+const completeBooking = (e) => {
+   const submitBtn = e.currentTarget
+   const backupContent = e.target.innerHTML
+   submitBtn.innerHTML = createLoading()
+   processBookingService
+      .completeBooking(getBookingId())
+      .then(() => {
+         reloadPage()
+      })
+      .catch((error) => {
+         toaster.error(error.message)
+      })
+      .finally(() => {
+         submitBtn.innerHTML = backupContent
+      })
+}
+
 const completeProcessBooking = (e) => {
    const type = e.target.closest("[data-kb-tab-type]").getAttribute("data-kb-tab-type")
    showError(undefined, type)
    switch (type) {
       case "reject":
          rejectBooking(type)
-         break
-      case "cancel":
-         cancelBooking(type)
          break
       case "approve":
          approveBooking(type)
@@ -124,6 +136,26 @@ const openCancelBookingForm = () => {
    const openCancelBookingBtn = document.querySelector("#cancel-booking .open-cancel-booking-btn")
    openCancelBookingBtn.hidden = !openCancelBookingBtn.hidden
    cancelBookingForm.hidden = !cancelBookingForm.hidden
+}
+
+const updateBooking = (e) => {
+   e.preventDefault()
+   const formEle = e.currentTarget
+   const formData = extractFormData(formEle)
+   const submitBtn = formEle.querySelector(".submit-btn")
+   const backupContent = submitBtn.innerHTML
+   submitBtn.innerHTML = createLoading()
+   bookingService
+      .updateBooking(formData)
+      .then(() => {
+         reloadPage()
+      })
+      .catch(() => {
+         toaster.error("Cập nhật đơn thất bại", "Cập nhật đơn thất bại")
+      })
+      .finally(() => {
+         submitBtn.innerHTML = backupContent
+      })
 }
 
 const init = () => {
@@ -153,21 +185,26 @@ const init = () => {
             tableRow.querySelector(".form-check-input").click()
          })
       }
-   }
 
-   const completeProcessingBtns = document.querySelectorAll(
-      "#booking-processing .complete-processing .submit-btn"
-   )
-   for (const btn of completeProcessingBtns) {
-      btn.addEventListener("click", completeProcessBooking)
+      const completeProcessingBtns = document.querySelectorAll(
+         "#booking-processing .complete-processing .submit-btn"
+      )
+      for (const btn of completeProcessingBtns) {
+         btn.addEventListener("click", completeProcessBooking)
+      }
    }
 
    document
       .querySelector("#cancel-booking .open-cancel-booking-btn")
-      .addEventListener("click", openCancelBookingForm)
-   document.getElementById("cancel-booking-form").addEventListener("submit", cancelBooking)
+      ?.addEventListener("click", openCancelBookingForm)
+   document.getElementById("cancel-booking-form")?.addEventListener("submit", cancelBooking)
    document
       .querySelector("#cancel-booking-form .confirm-cancel-booking .cancel-btn")
-      .addEventListener("click", openCancelBookingForm)
+      ?.addEventListener("click", openCancelBookingForm)
+
+   document.getElementById("update-booking-form")?.addEventListener("submit", updateBooking)
+   document
+      .querySelector("#complete-booking .complete-booking-btn")
+      ?.addEventListener("click", completeBooking)
 }
 init()

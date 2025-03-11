@@ -1,0 +1,176 @@
+@use "../../utils/global-styles.scss" as gs;
+
+#main-section {
+   min-height: calc(100vh - 60.8px - 68.8px);
+   padding: 20px 50px;
+
+   .title-section {
+      border-bottom: 2px black solid;
+      width: 100%;
+
+      h3 {
+         font-weight: bold;
+      }
+   }
+
+   .result-summary {
+      display: flex;
+      gap: 30px;
+      font-weight: bold;
+      padding-left: 10px;
+      align-items: center;
+      margin-top: 10px;
+
+      p {
+         display: flex;
+         align-items: center;
+         gap: 6px;
+         margin: 0;
+
+         i {
+            font-size: 1.1rem;
+         }
+      }
+   }
+
+   .result-section {
+      margin-top: 5px;
+
+      .booking-list {
+         display: flex;
+         flex-wrap: wrap;
+         gap: 10px;
+         margin-top: 10px;
+
+         .booking-card {
+            background-color: #fff;
+            padding: 15px;
+            border-left: 6px solid gs.$primary-color;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 50%;
+
+            &:nth-child(odd) {
+               width: calc(50% - 10px);
+            }
+
+            &:hover {
+               outline: 2px gs.$primary-color solid;
+            }
+
+            .card-title {
+               display: flex;
+               justify-content: space-between;
+               column-gap: 30px;
+
+               h5 {
+                  margin: 0;
+                  font-weight: bold;
+                  color: gs.$primary-color;
+               }
+
+               .status {
+                  border-radius: 4px;
+                  color: white;
+                  padding: 5px 15px;
+                  font-weight: bold;
+
+                  &.rejected,
+                  &.cancelled {
+                     background-color: red;
+                  }
+                  &.pending {
+                     background-color: gs.$primary-color;
+                  }
+                  &.approved {
+                     background-color: gs.$success-color;
+                  }
+               }
+            }
+
+            .card-info {
+               display: flex;
+               justify-content: space-between;
+               flex-wrap: wrap;
+               column-gap: 35px;
+               row-gap: 5px;
+               margin-top: 5px;
+
+               p {
+                  margin: 5px 0;
+               }
+            }
+
+            .reject-reason {
+               color: red;
+               background-color: #ff000029;
+               border-radius: 5px;
+               padding: 5px 10px;
+               margin-top: 10px;
+            }
+
+            .tables-list {
+               background-color: #50cd9f57;
+               border-radius: 5px;
+               padding: 5px 10px;
+               font-weight: bold;
+               margin-top: 10px;
+            }
+
+            .booking-actions {
+               display: flex;
+               align-items: center;
+               justify-content: space-between;
+               margin-top: 5px;
+
+               .actions {
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+
+                  .action-btn {
+                     display: flex;
+                     align-items: center;
+                     gap: 5px;
+                     border-radius: 6px;
+                     background-color: gs.$dark-bg;
+                     color: white;
+                     outline: none;
+                     border: none;
+                     padding: 6px 15px;
+                     text-decoration: none;
+                     border: 2px gs.$dark-bg solid;
+                     margin-top: 5px;
+
+                     &:hover {
+                        background-color: white;
+                        color: gs.$dark-bg;
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+      .empty-result {
+         display: flex;
+         width: 100%;
+         padding: 50px;
+
+         .empty-content {
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+            align-items: center;
+            margin: auto;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: gray;
+
+            i {
+               font-size: 3rem;
+            }
+         }
+      }
+   }
+}

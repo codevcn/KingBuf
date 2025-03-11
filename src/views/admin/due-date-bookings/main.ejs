@@ -1,12 +1,12 @@
 <main id="main-section">
   <section class="title-section">
-    <h3>Tất cả các đơn đặt bàn</h3>
+    <h3>Các đơn đặt bàn gần đến hạn / quá hạn</h3>
   </section>
 
   <section class="result-summary">
     <p>
       <i class="bi bi-card-text"></i>
-      <span>Tổng cộng <%= bookings?.length || 0 %> đơn đặt bàn.</span>
+      <span>Hiện có <%= bookings?.length || 0 %> đơn gần đến hạn / quá hạn.</span>
     </p>
   </section>
 
@@ -56,8 +56,8 @@
               <span>Xử lý đơn</span>
               <i class="bi bi-arrow-right-circle"></i>
               <% } else if (Status === 'Approved') { %>
-              <span>Hủy đơn</span>
-              <i class="bi bi-trash"></i>
+              <span>Cập nhật đơn</span>
+              <i class="bi bi-arrow-repeat"></i>
               <% } %>
             </a>
           </div>

@@ -1,4 +1,4 @@
-@use "../utils/global-styles.scss" as gs;
+@use "../../utils/global-styles.scss" as gs;
 
 #main-section {
    min-height: calc(100vh - 60.8px - 68.8px);
@@ -19,7 +19,7 @@
       font-weight: bold;
       padding-left: 10px;
       align-items: center;
-      margin-top: 20px;
+      margin-top: 10px;
 
       p {
          display: flex;
@@ -37,15 +37,22 @@
       margin-top: 5px;
 
       .booking-list {
+         display: flex;
+         flex-wrap: wrap;
+         gap: 10px;
          margin-top: 10px;
 
          .booking-card {
-            background: #fff;
+            background-color: #fff;
             padding: 15px;
-            margin-bottom: 10px;
             border-left: 6px solid gs.$primary-color;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 50%;
+
+            &:nth-child(odd) {
+               width: calc(50% - 10px);
+            }
 
             &:hover {
                outline: 2px gs.$primary-color solid;

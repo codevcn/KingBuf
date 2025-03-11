@@ -6,6 +6,14 @@ class BookingService {
          }, 1000)
       })
    }
+
+   async updateBooking(data) {
+      await new Promise((resolve, reject) => {
+         setTimeout(() => {
+            reject(new Error("something went vcn error!!"))
+         }, 1000)
+      })
+   }
 }
 
 const bookingService = new BookingService()
@@ -33,6 +41,14 @@ class ProcessBookingService {
          setTimeout(() => {
             // reject(new Error("something went vcn error!!"))
             resolve(true)
+         }, 1000)
+      })
+   }
+
+   async completeBooking(bookingId) {
+      await new Promise((resolve, reject) => {
+         setTimeout(() => {
+            reject(new Error("something went vcn error!!"))
          }, 1000)
       })
    }

@@ -83,7 +83,7 @@ footer p {
   font-weight: bold;
   padding-left: 10px;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 #main-section .result-summary p {
   display: flex;
@@ -98,15 +98,21 @@ footer p {
   margin-top: 5px;
 }
 #main-section .result-section .booking-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-top: 10px;
 }
 #main-section .result-section .booking-list .booking-card {
-  background: #fff;
+  background-color: #fff;
   padding: 15px;
-  margin-bottom: 10px;
   border-left: 6px solid #eab308;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 50%;
+}
+#main-section .result-section .booking-list .booking-card:nth-child(odd) {
+  width: calc(50% - 10px);
 }
 #main-section .result-section .booking-list .booking-card:hover {
   outline: 2px #eab308 solid;
