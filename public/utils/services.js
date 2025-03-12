@@ -72,6 +72,14 @@ class TablesService {
          }, 1000)
       })
    }
+
+   async updateTable(tableId, updateData) {
+      await new Promise((resolve, reject) => {
+         setTimeout(() => {
+            reject(new Error("something went vcn error!!"))
+         }, 1000)
+      })
+   }
 }
 
 const tablesService = new TablesService()

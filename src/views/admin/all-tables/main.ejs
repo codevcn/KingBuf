@@ -22,20 +22,20 @@
         </tr>
       </thead>
       <tbody>
-        <% tables.forEach(({TableID,TableNumber,Capacity,Location,Status}) => { %>
-        <tr class="<%= Status === 'Maintenance' ? 'maintained' : '' %>">
-          <td><%= TableNumber %></td>
-          <td><%= Capacity %></td>
-          <td><%= Location %></td>
-          <% if (Status === 'Maintenance') { %>
+        <% tables.forEach((table) => { %>
+        <tr class="<%= table.Status === 'Maintenance' ? 'maintained' : '' %>">
+          <td><%= table.TableNumber %></td>
+          <td><%= table.Capacity %></td>
+          <td><%= table.Location %></td>
+          <% if (table.Status === 'Maintenance') { %>
           <td>Đang bảo trì</td>
           <% } else { %>
           <td>Còn trống</td>
           <% } %>
           <td>
             <div class="actions">
-              <button class="action delete" data-kb-table-id="<%= TableID %>">Xóa bàn</button>
-              <button class="action update" data-kb-table-id="<%= TableID %>">Cập nhật bàn</button>
+              <button class="action delete" data-kb-table-id="<%= table.TableID %>">Xóa bàn</button>
+              <button class="action update" data-kb-table-id="<%= table.TableID %>" data-kb-table-data="<%= JSON.stringify(table) %>">Cập nhật bàn</button>
             </div>
           </td>
         </tr>
@@ -56,18 +56,18 @@
         <form id="add-new-table-form">
           <div class="form-groups">
             <div class="form-group table-number">
-              <label for="table-number-input">Số hiệu bàn</label>
-              <input id="table-number-input" name="table-number" placeholder="Nhập số hiệu bàn, ví dụ: 1">
+              <label for="add-table-table-number-input">Số hiệu bàn</label>
+              <input id="add-table-table-number-input" name="table-number" placeholder="Nhập số hiệu bàn, ví dụ: 1">
               <div class="message" hidden></div>
             </div>
             <div class="form-group capacity">
-              <label for="capacity-input">Sức chứa</label>
-              <input id="capacity-input" name="capacity" type="number" placeholder="Nhập sức chứa của bàn (số người)">
+              <label for="add-table-capacity-input">Sức chứa</label>
+              <input id="add-table-capacity-input" name="capacity" min="1" type="number" placeholder="Nhập sức chứa của bàn (số người)">
               <div class="message" hidden></div>
             </div>
             <div class="form-group location">
-              <label for="location">Vị trí</label>
-              <input type="text" id="location" name="location" placeholder="Nhập vị trí của bàn, ví dụ: Sảnh VIP">
+              <label for="add-table-location-input">Vị trí</label>
+              <input type="text" id="add-table-location-input" name="location" placeholder="Nhập vị trí của bàn, ví dụ: Sảnh VIP">
               <div class="message" hidden></div>
             </div>
           </div>
@@ -109,30 +109,31 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Thêm bàn mới</h4>
+        <h4 class="modal-title">Cập nhật bàn</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form id="update-new-table-form">
+        <form id="update-table-form">
           <div class="form-groups">
             <div class="form-group table-number">
-              <label for="table-number-input">Số hiệu bàn</label>
-              <input id="table-number-input" name="table-number" placeholder="Nhập số hiệu bàn, ví dụ: 1">
+              <label for="update-table-table-number-input">Số hiệu bàn</label>
+              <input id="update-table-table-number-input" name="table-number" placeholder="Nhập số hiệu bàn, ví dụ: 1">
               <div class="message" hidden></div>
             </div>
             <div class="form-group capacity">
-              <label for="capacity-input">Sức chứa</label>
-              <input id="capacity-input" name="capacity" type="number" placeholder="Nhập sức chứa của bàn (số người)">
+              <label for="update-table-capacity-input">Sức chứa</label>
+              <input id="update-table-capacity-input" name="capacity" min="1" type="number" placeholder="Nhập sức chứa của bàn (số người)">
               <div class="message" hidden></div>
             </div>
             <div class="form-group location">
-              <label for="location">Vị trí</label>
-              <input type="text" id="location" name="location" placeholder="Nhập vị trí của bàn, ví dụ: Sảnh VIP">
+              <label for="update-table-location-input">Vị trí</label>
+              <input type="text" id="update-table-location-input" name="location" placeholder="Nhập vị trí của bàn, ví dụ: Sảnh VIP">
               <div class="message" hidden></div>
             </div>
-            <div class="form-group location">
-              <label for="location">Trạng thái</label>
-              <div class="dropdown" id="table-status-select" data-kb-selected-status="">
+            <div class="form-group status">
+              <label>Trạng thái</label>
+              <input type="text" id="update-table-status-input" name="status" hidden>
+              <div class="dropdown" id="table-status-select">
                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                 </button>
                 <ul class="dropdown-menu">
@@ -145,7 +146,7 @@
           <div class="submit-section">
             <button type="submit" class="submit-btn" id="update-table-button">
               <i class="bi bi-check-lg"></i>
-              <span>Thêm bàn</span>
+              <span>Cập nhật bàn</span>
             </button>
           </div>
         </form>

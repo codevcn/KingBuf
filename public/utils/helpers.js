@@ -37,7 +37,5 @@ function reloadPage() {
 }
 
 function checkIsInteger(inputStr) {
-   console.log(">>> res:", inputStr)
-   console.log(">>> res:", /^-?\d+$/.test(inputStr))
    return /^-?\d+$/.test(inputStr)
 }
