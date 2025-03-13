@@ -27,15 +27,22 @@ function extractFormData(formEle, formFields) {
    return formData
 }
 
-function navigateWithPayload(href, params) {
-   const queryString = new URLSearchParams(params).toString()
-   window.location.href = queryString ? `${href}?${queryString}` : href
-}
-
 function reloadPage() {
    window.location.reload()
 }
 
 function checkIsInteger(inputStr) {
    return /^-?\d+$/.test(inputStr)
+}
+
+function setURLWithQueryString(url, params) {
+   return url + (url.includes("?") ? "&" : "?") + new URLSearchParams(params).toString()
+}
+
+function getCurrentPath() {
+   return window.location.pathname
+}
+
+function navigateWithPayload(href, params) {
+   window.location.href = setURLWithQueryString(href, params)
 }

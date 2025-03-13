@@ -29,7 +29,7 @@
           </div>
           <div class="info-item closed">
             <i class="bi bi-clock icon"></i>
-            <span>Đóng cửa</span>
+            <span>Mở cửa từ thứ 2 đến thứ 7 hàng tuần</span>
           </div>
         </div>
       </div>
@@ -59,6 +59,10 @@
         <p>- King BBQ thuộc sở hữu của Tập đoàn RedSun ITI - Một trong những tập đoàn ẩm thực lớn mạnh bậc nhất Việt Nam, sở hữu nhiều thương hiệu ẩm thực nổi tiếng khác như: ThaiExpress, Hotpot Story, Seoul Garden, Sushi Kei, Buk Buk, Capricciosa, Khao Lao, Tasaki BBQ, Meiwei, Truly Việt, Dolpan Sam</p>
         <p>- Công thức độc quyền của “nước sốt King” - được chính Bếp trưởng Park Sung Min, một trong những đầu bếp nổi tiếng nhất Hàn Quốc, với kinh nghiệm hơn 40 năm trong ngành ẩm thực, trực tiếp nghiên cứu và chế biến.</p>
       </div>
+      <div class="section">
+        <h5>LIÊN LẠC NHÀ HÀNG:</h5>
+        <p>- Số điện thoại: 0123 456 789</p>
+      </div>
     </section>
   </section>
 
@@ -73,21 +77,25 @@
         <label for="phone-input">Số điện thoại</label>
         <input type="number" id="phone-input" name="phone" placeholder="Nhập số điện thoại, ví dụ: 0987654321">
       </div>
-      <div class="form-group date">
-        <label for="date-input">Ngày đặt</label>
-        <input type="date" id="date-input" name="date">
+      <div class="form-group-row">
+        <div class="form-group date">
+          <label for="date-input">Ngày đặt</label>
+          <input type="date" id="date-input" name="date">
+        </div>
+        <div class="form-group time">
+          <label for="time-inp">Giờ đặt</label>
+          <input type="time" id="time-inp" name="time">
+        </div>
       </div>
-      <div class="form-group time">
-        <label for="time-inp">Giờ đặt</label>
-        <input type="time" id="time-inp" name="time">
-      </div>
-      <div class="form-group adults-count">
-        <label for="adults-count-input">Số người lớn</label>
-        <input type="number" id="adults-count-input" min="1" name="adults-count" placeholder="Số lượng khách">
-      </div>
-      <div class="form-group children-count">
-        <label for="children-count-input">Số trẻ em</label>
-        <input type="number" id="children-count-input" name="children-count" min="1" placeholder="Số lượng khách">
+      <div class="form-group-row">
+        <div class="form-group adults-count">
+          <label for="adults-count-input">Số người lớn</label>
+          <input type="number" id="adults-count-input" min="1" name="adults-count" placeholder="Số lượng khách">
+        </div>
+        <div class="form-group children-count">
+          <label for="children-count-input">Số trẻ em</label>
+          <input type="number" id="children-count-input" name="children-count" min="1" placeholder="Số lượng khách">
+        </div>
       </div>
       <div class="form-group note">
         <label for="note-input">Ghi chú</label>

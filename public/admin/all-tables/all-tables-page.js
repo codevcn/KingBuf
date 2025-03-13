@@ -186,7 +186,7 @@ const init = () => {
       .querySelector("#confirm-delete-section .submit-btn")
       .addEventListener("click", deleteTable)
 
-   // Update table
+   // table status dropdown
    const dropdownButton = document.querySelector("#table-status-select .dropdown-toggle")
    const dropdownItems = document.querySelectorAll("#table-status-select .dropdown-item")
    for (const item of dropdownItems) {

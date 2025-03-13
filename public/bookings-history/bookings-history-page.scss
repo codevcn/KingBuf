@@ -65,15 +65,22 @@
       margin-top: 20px;
 
       .booking-list {
-         margin-top: 10px;
+         display: flex;
+         flex-wrap: wrap;
+         gap: 10px;
 
          .booking-card {
-            background: #fff;
+            background-color: #fff;
             padding: 15px;
             margin-bottom: 10px;
             border-left: 6px solid gs.$primary-color;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 50%;
+
+            &:nth-child(odd) {
+               width: calc(50% - 10px);
+            }
 
             &:hover {
                outline: 2px gs.$primary-color solid;

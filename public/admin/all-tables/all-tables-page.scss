@@ -13,7 +13,7 @@
       }
    }
 
-   .actions {
+   .top-actions {
       display: flex;
       justify-content: end;
       gap: 15px;
@@ -85,6 +85,7 @@
                   border-radius: 4px;
                   border-width: 2px;
                   border-style: solid;
+                  color: white;
 
                   &.delete {
                      background-color: red;
@@ -296,6 +297,14 @@
 
                &::after {
                   color: gray;
+               }
+            }
+
+            .dropdown-menu {
+               .dropdown-item {
+                  padding-top: 8px;
+                  padding-bottom: 8px;
+                  cursor: pointer;
                }
             }
          }

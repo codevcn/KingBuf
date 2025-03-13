@@ -18,27 +18,32 @@
         <% } %>
       </h3>
 
-      <form id="update-booking-form">
+      <form id="update-booking-form" data-kb-booking-id="<%= booking.ReservationID %>">
         <div class="form-groups">
           <div class="form-group full-name">
             <label for="fullname-input">Họ và tên người đặt</label>
-            <input value="<%= booking.Cus_FullName %>" id="fullname-input" name="fullname" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <input value="<%= booking.Cus_FullName %>" id="fullname-input" name="full-name" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <div class="message"></div>
           </div>
           <div class="form-group phone">
             <label for="phone-input">Số điện thoại người đặt</label>
             <input value="<%= booking.Cus_Phone %>" id="phone-input" name="phone" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <div class="message"></div>
           </div>
           <div class="form-group date">
             <label for="date-input">Ngày đến</label>
             <input type="date" id="date-input" name="date" value="<%= booking.date %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <div class="message"></div>
           </div>
           <div class="form-group time">
             <label for="time-input">Giờ đến</label>
             <input type="time" id="time-input" name="time" value="<%= booking.time %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <div class="message"></div>
           </div>
           <div class="form-group note">
             <label for="note-input">Ghi chú</label>
             <textarea rows="5" id="note-input" name="note" <%= booking.Status === 'Completed' ? 'disabled' : '' %>><%= booking.Note %></textarea>
+            <div class="message"></div>
           </div>
           <div class="form-group created-at">
             <label>Ngày tạo đơn</label>
@@ -47,10 +52,12 @@
           <div class="form-group adults-count">
             <label for="adults-count-input">Số người lớn</label>
             <input value="<%= booking.NumAdults %>" id="adults-count-input" name="adults-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <div class="message"></div>
           </div>
           <div class="form-group children-count">
             <label for="children-count-input">Số trẻ em</label>
             <input value="<%= booking.NumChildren %>" id="children-count-input" name="children-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <div class="message"></div>
           </div>
           <div class="form-group status">
             <label>Trạng thái</label>
@@ -69,6 +76,18 @@
             </p>
           </div>
         </div>
+        <% if (booking.Status === 'Approved') { %>
+        <div class="form-groups">
+          <div class="form-group tables-assigned">
+            <label>Danh sách bàn được gán cho đơn</label>
+            <p>
+              <% booking.TablesList.forEach(({TableNumber},index) => {%>
+              <span><%= TableNumber %><%= index === booking.TablesList.length - 1 ? '' : ',' %></span>
+              <% }) %>
+            </p>
+          </div>
+        </div>
+        <% } %>
         <% if (booking.Status !== 'Completed') { %>
         <div class="btns">
           <span></span>
@@ -79,6 +98,93 @@
         </div>
         <% } %>
       </form>
+
+      <% if (booking.Status === 'Approved') { %>
+      <section id="update-assign-tables">
+        <button type="button" class="open-btn">
+          <i class="bi bi-list-columns"></i>
+          <span>Cập nhật danh sách bàn</span>
+        </button>
+
+        <% if (emptyTables && emptyTables.length > 0) { %>
+        <form id="filter-tables-form" class="filter-tables-form" hidden>
+          <h2 class="filter-tables-title">Bộ lọc bàn</h2>
+
+          <div class="form-groups">
+            <div class="form-group date">
+              <label for="filter-tables-date-input">Ngày phục vụ</label>
+              <input type="date" id="filter-tables-date-input" name="date" value="<%= booking.date %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+              <div class="message"></div>
+            </div>
+            <div class="form-group time">
+              <label for="filter-tables-time-input">Giờ phục vụ</label>
+              <input type="time" id="filter-tables-time-input" name="time" value="<%= booking.time %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+              <div class="message"></div>
+            </div>
+            <div class="form-group people-count">
+              <label for="filter-tables-people-count-input">Số người phục vụ</label>
+              <input type="number" value="<%= booking.NumAdults + booking.NumChildren %>" id="filter-tables-people-count-input" name="people-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+              <div class="message"></div>
+            </div>
+          </div>
+
+          <div class="btns">
+            <button class="submit-btn">
+              <i class="bi bi-check-lg"></i>
+              <span>Áp dụng bộ lọc</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="restaurant-tables" hidden>
+          <table>
+            <thead>
+              <tr>
+                <th>Số hiệu</th>
+                <th>Sức chứa (người)</th>
+                <th>Vị trí</th>
+                <th>Trạng thái</th>
+                <th>Chọn bàn</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% emptyTables.forEach(({TableID,TableNumber,Capacity,Location,Status}) => { %>
+              <tr class="<%= Status === 'Maintenance' ? 'maintained' : '' %>">
+                <td><%= TableNumber %></td>
+                <td><%= Capacity %></td>
+                <td><%= Location %></td>
+                <% if (Status === 'Maintenance') { %>
+                <td>Đang bảo trì</td>
+                <% } else { %>
+                <td>Còn trống</td>
+                <% } %>
+                <% if (Status !== 'Maintenance') { %>
+                <td>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="<%= TableID %>" id="table-pick-id-<%= TableID %>">
+                  </div>
+                </td>
+                <% } else { %>
+                <td></td>
+                <% } %>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+
+          <div class="confirm-assign-tables">
+            <button type="button" class="escape-btn">
+              <span>Thoát</span>
+            </button>
+            <button type="button" class="submit-btn">
+              <i class="bi bi-check-all"></i>
+              <span>Xác nhận hủy đơn</span>
+            </button>
+          </div>
+        </div>
+        <% } %>
+      </section>
+      <% } %>
     </section>
   </section>
 
@@ -150,6 +256,13 @@
         </li>
 
         <li class="nav-item" role="presentation">
+          <button class="nav-link" id="cancel-tab" data-bs-toggle="tab" data-bs-target="#cancel-tab-pane" type="button" role="tab">
+            <i class="bi bi-x-lg"></i>
+            <span>Hủy đơn</span>
+          </button>
+        </li>
+
+        <li class="nav-item" role="presentation">
           <button class="nav-link active" id="approve-tab" data-bs-toggle="tab" data-bs-target="#approve-tab-pane" type="button" role="tab">
             <i class="bi bi-check-circle-fill"></i>
             <span>Duyệt đơn</span>
@@ -183,9 +296,64 @@
           </div>
         </div>
 
+        <div class="tab-pane fade" id="cancel-tab-pane" role="tabpanel" tabindex="0" data-kb-tab-type="cancel">
+          <form class="cancel-form">
+            <div class="form-group">
+              <label for="cancel-reject-input">Lý do hủy đơn</label>
+              <textarea id="cancel-booking-input" rows="3" placeholder="Nhập lý do hủy đơn ở đây..."></textarea>
+            </div>
+          </form>
+
+          <section hidden class="processing-result">
+            <div class="result-title">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <span>Xử lý đơn thất bại</span>
+            </div>
+            <p class="result-message"></p>
+          </section>
+
+          <div class="complete-processing">
+            <span></span>
+            <button class="submit-btn">
+              <i class="bi bi-check-all"></i>
+              <span>Hoàn tất xử lý đơn</span>
+            </button>
+          </div>
+        </div>
+
         <div class="tab-pane fade show active" id="approve-tab-pane" role="tabpanel" tabindex="0" data-kb-tab-type="approve">
           <section id="approve-booking">
-            <label>Danh sách bàn còn trống của nhà hàng</label>
+            <label class="approve-booking-title">Danh sách bàn còn trống của nhà hàng</label>
+
+            <% if (emptyTables && emptyTables.length > 0) { %>
+            <form id="filter-tables-form">
+              <h2 class="filter-tables-title">Bộ lọc bàn</h2>
+
+              <div class="form-groups">
+                <div class="form-group date">
+                  <label for="filter-tables-date-input">Ngày phục vụ</label>
+                  <input type="date" id="filter-tables-date-input" name="date" value="<%= booking.date %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+                  <div class="message"></div>
+                </div>
+                <div class="form-group time">
+                  <label for="filter-tables-time-input">Giờ phục vụ</label>
+                  <input type="time" id="filter-tables-time-input" name="time" value="<%= booking.time %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+                  <div class="message"></div>
+                </div>
+                <div class="form-group people-count">
+                  <label for="filter-tables-people-count-input">Số người phục vụ</label>
+                  <input type="number" value="<%= booking.NumAdults + booking.NumChildren %>" id="filter-tables-people-count-input" name="people-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+                  <div class="message"></div>
+                </div>
+              </div>
+
+              <div class="btns">
+                <button class="submit-btn">
+                  <i class="bi bi-check-lg"></i>
+                  <span>Áp dụng bộ lọc</span>
+                </button>
+              </div>
+            </form>
 
             <section class="summary">
               <p>
@@ -194,7 +362,6 @@
               </p>
             </section>
 
-            <% if (emptyTables && emptyTables.length > 0) { %>
             <div class="restaurant-tables">
               <table>
                 <thead>
@@ -261,41 +428,4 @@
     </section>
     <% } %>
   </section>
-
-  <% if (booking.Status === 'Approved') { %>
-  <section id="additional-processing">
-    <section id="complete-booking">
-      <button type="button" class="complete-booking-btn">
-        <i class="bi bi-clipboard2-check"></i>
-        <span>Hoàn thành đơn</span>
-      </button>
-    </section>
-    <section id="cancel-booking">
-      <button type="button" class="open-cancel-booking-btn">
-        <i class="bi bi-trash"></i>
-        <span>Hủy đơn</span>
-      </button>
-
-      <form id="cancel-booking-form" hidden>
-        <div class="form-group">
-          <label for="cancel-reject-input">Lý do hủy đơn</label>
-          <textarea id="cancel-booking-input" rows="3" placeholder="Nhập lý do hủy đơn ở đây..."></textarea>
-        </div>
-
-        <div class="confirm-cancel-booking">
-          <span></span>
-          <div class="btns">
-            <button type="button" class="cancel-btn">
-              <span>Thoát</span>
-            </button>
-            <button type="submit" class="submit-btn">
-              <i class="bi bi-check-all"></i>
-              <span>Xác nhận hủy đơn</span>
-            </button>
-          </div>
-        </div>
-      </form>
-    </section>
-  </section>
-  <% } %>
 </main>

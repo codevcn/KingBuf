@@ -142,6 +142,9 @@ footer p {
 #main-section .result-section .booking-list .booking-card .card-title .status.approved {
   background-color: #50cd9f;
 }
+#main-section .result-section .booking-list .booking-card .card-title .status.arrived {
+  background-color: #7700ff;
+}
 #main-section .result-section .booking-list .booking-card .card-info {
   display: flex;
   justify-content: space-between;
@@ -170,15 +173,11 @@ footer p {
 #main-section .result-section .booking-list .booking-card .booking-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: end;
   margin-top: 5px;
-}
-#main-section .result-section .booking-list .booking-card .booking-actions .actions {
-  display: flex;
-  align-items: center;
   gap: 10px;
 }
-#main-section .result-section .booking-list .booking-card .booking-actions .actions .action-btn {
+#main-section .result-section .booking-list .booking-card .booking-actions .action-btn {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -192,9 +191,19 @@ footer p {
   border: 2px #1f2937 solid;
   margin-top: 5px;
 }
-#main-section .result-section .booking-list .booking-card .booking-actions .actions .action-btn:hover {
+#main-section .result-section .booking-list .booking-card .booking-actions .action-btn:hover {
   background-color: white;
   color: #1f2937;
+}
+#main-section .result-section .booking-list .booking-card .booking-actions .action-btn:hover .spinner-border {
+  color: #1f2937;
+}
+#main-section .result-section .booking-list .booking-card .booking-actions .action-btn .spinner-border {
+  display: flex;
+  height: 19.2px;
+  width: 19.2px;
+  color: white;
+  margin: 0 auto;
 }
 #main-section .result-section .empty-result {
   display: flex;
@@ -213,6 +222,104 @@ footer p {
 }
 #main-section .result-section .empty-result .empty-content i {
   font-size: 3rem;
+}
+
+#filter-bookings-form {
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 15px 0 20px;
+}
+#filter-bookings-form .filter-bookings-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+#filter-bookings-form .form-groups {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 16px;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 5px;
+}
+#filter-bookings-form .form-groups .form-group {
+  flex: 1 1 calc(50% - 16px);
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+}
+#filter-bookings-form .form-groups .form-group label {
+  font-weight: bold;
+  color: #4b5563;
+  margin-bottom: 4px;
+  padding-left: 5px;
+}
+#filter-bookings-form .form-groups .form-group input,
+#filter-bookings-form .form-groups .form-group p,
+#filter-bookings-form .form-groups .form-group textarea,
+#filter-bookings-form .form-groups .form-group .dropdown-toggle {
+  background-color: white;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 1px gray;
+  margin: 0;
+  outline: none;
+  border: none;
+}
+#filter-bookings-form .form-groups .form-group .dropdown {
+  flex-grow: 1;
+}
+#filter-bookings-form .form-groups .form-group .dropdown .dropdown-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: black;
+  width: 100%;
+  height: 100%;
+}
+#filter-bookings-form .form-groups .form-group .dropdown .dropdown-toggle::after {
+  color: gray;
+}
+#filter-bookings-form .form-groups .form-group .dropdown .dropdown-menu .dropdown-item {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  cursor: pointer;
+}
+#filter-bookings-form .btns {
+  display: flex;
+  justify-content: end;
+  gap: 10px;
+  margin-top: 10px;
+}
+#filter-bookings-form .btns .submit-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 6px;
+  background-color: #1f2937;
+  color: white;
+  outline: none;
+  border: none;
+  padding: 6px 15px;
+  text-decoration: none;
+  border: 2px #1f2937 solid;
+  margin-top: 5px;
+}
+#filter-bookings-form .btns .submit-btn:hover {
+  background-color: white;
+  color: #1f2937;
+}
+#filter-bookings-form .btns .submit-btn:hover .spinner-border {
+  color: #1f2937;
+}
+#filter-bookings-form .btns .submit-btn .spinner-border {
+  display: flex;
+  height: 19.2px;
+  width: 19.2px;
+  color: white;
+  margin: 0 auto;
 }
 
 /*# sourceMappingURL=all-bookings-page.css.map */

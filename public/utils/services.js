@@ -7,7 +7,7 @@ class BookingService {
       })
    }
 
-   async updateBooking(data) {
+   async updateBooking(bookingId, data) {
       await new Promise((resolve, reject) => {
          setTimeout(() => {
             reject(new Error("something went vcn error!!"))
@@ -39,8 +39,8 @@ class ProcessBookingService {
    async cancelBooking(bookingId, reason) {
       await new Promise((resolve, reject) => {
          setTimeout(() => {
-            // reject(new Error("something went vcn error!!"))
-            resolve(true)
+            reject(new Error("something went vcn error!!"))
+            // resolve(true)
          }, 1000)
       })
    }

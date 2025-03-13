@@ -3,6 +3,52 @@
     <h3>Tất cả các đơn đặt bàn</h3>
   </section>
 
+  <form id="filter-bookings-form">
+    <h2 class="filter-bookings-title">Bộ lọc đơn</h2>
+
+    <div class="form-groups">
+      <div class="form-group status">
+        <label>Trạng thái đơn</label>
+        <input type="text" name="status" id="booking-status-input" value="none" hidden>
+        <div class="dropdown" id="booking-status-select">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            Chọn trạng thái của đơn
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <div class="dropdown-item" data-kb-table-status="Pending">Chưa được xử lý</div>
+            </li>
+            <li>
+              <div class="dropdown-item" data-kb-table-status="Cancelled">Đã bị hủy</div>
+            </li>
+            <li>
+              <div class="dropdown-item" data-kb-table-status="Approved">Đã duyệt</div>
+            </li>
+            <li>
+              <div class="dropdown-item" data-kb-table-status="Rejected">Đã từ chối</div>
+            </li>
+            <li>
+              <div class="dropdown-item" data-kb-table-status="Arrived">Khách đã đến</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="form-group time">
+        <label for="filter-bookings-time-input">Thời gian đến hạn</label>
+        <input type="time" id="filter-bookings-time-input" name="time">
+        <div class="message"></div>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button class="submit-btn">
+        <i class="bi bi-check-lg"></i>
+        <span>Áp dụng bộ lọc</span>
+      </button>
+    </div>
+  </form>
+
   <section class="result-summary">
     <p>
       <i class="bi bi-card-text"></i>
@@ -14,7 +60,7 @@
     <% if (bookings && bookings.length > 0) { %>
     <div class="booking-list">
       <% bookings.forEach(({ReservationID,Cus_FullName,Cus_Phone,ArrivalTime,NumAdults,NumChildren,Note,Status,CreatedAt,TablesList,Reason}) => { %>
-      <div class="booking-card">
+      <div class="booking-card" data-kb-booking-id="<%= ReservationID%>">
         <div class="card-title">
           <h5>Đơn #<%= ReservationID %></h5>
           <% if (Status === 'Pending') { %>
@@ -23,6 +69,8 @@
           <div class="status approved">Đã duyệt</div>
           <% } else if (Status === 'Cancelled') { %>
           <div class="status cancelled">Đã hủy</div>
+          <% } else if (Status === 'Arrived') { %>
+          <div class="status arrived">Khách đã đến</div>
           <% } else { %>
           <div class="status rejected">Đã từ chối</div>
           <% } %>
@@ -47,22 +95,36 @@
           <% }) %>
         </div>
         <% } %>
-        <% if (Status === 'Pending' || Status === 'Approved') { %>
         <div class="booking-actions">
-          <span></span>
-          <div class="actions">
-            <a class="action-btn" href="/admin/processing/<%= ReservationID %>">
-              <% if (Status === 'Pending') { %>
-              <span>Xử lý đơn</span>
-              <i class="bi bi-arrow-right-circle"></i>
-              <% } else if (Status === 'Approved') { %>
-              <span>Cập nhật đơn</span>
-              <i class="bi bi-arrow-repeat"></i>
-              <% } %>
-            </a>
-          </div>
+          <% if (Status === 'Arrived') { %>
+          <button type="button" class="action-btn" id="complete-booking-btn">
+            <i class="bi bi-clipboard-check"></i>
+            <span>Hoàn thành đơn</span>
+          </button>
+          <% } else if (Status !== 'Arrived' && Status !== 'Rejected' && Status !== 'Cancelled') { %>
+          <% if (Status !== 'Pending') { %>
+          <button type="button" class="action-btn" id="set-arrived-cus-btn">
+            <i class="bi bi-person-fill-check"></i>
+            <span>Khách đã đến</span>
+          </button>
+          <% } %>
+          <button type="button" class="action-btn" id="cancel-booking-btn">
+            <i class="bi bi-person-fill-check"></i>
+            <span>Hủy đơn</span>
+          </button>
+          <% } %>
+          <% if (Status === 'Pending' || Status === 'Approved') { %>
+          <a class="action-btn" href="/admin/processing/<%= ReservationID %>">
+            <% if (Status === 'Pending') { %>
+            <span>Xử lý đơn</span>
+            <i class="bi bi-arrow-right-circle"></i>
+            <% } else if (Status === 'Approved') { %>
+            <span>Cập nhật đơn</span>
+            <i class="bi bi-arrow-repeat"></i>
+            <% } %>
+          </a>
+          <% } %>
         </div>
-        <% } %>
       </div>
       <% }); %>
     </div>

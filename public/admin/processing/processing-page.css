@@ -70,6 +70,53 @@ footer p {
   min-height: calc(100vh - 60.8px - 68.8px);
   padding: 20px 50px 50px 50px;
 }
+#main-section .restaurant-tables {
+  margin-top: 10px;
+}
+#main-section .restaurant-tables table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+#main-section .restaurant-tables table thead {
+  background-color: #1f2937;
+  color: white;
+}
+#main-section .restaurant-tables table th {
+  padding: 10px 5px;
+  border: 1px solid white;
+  text-align: center;
+}
+#main-section .restaurant-tables table td {
+  padding: 10px 5px;
+  border: 1px solid rgba(75, 85, 99, 0.368627451);
+  text-align: center;
+}
+#main-section .restaurant-tables table tbody tr {
+  cursor: pointer;
+}
+#main-section .restaurant-tables table tbody tr:nth-child(even) {
+  background-color: #f3f4f6;
+}
+#main-section .restaurant-tables table tbody tr:hover {
+  background-color: rgba(234, 178, 8, 0.2509803922);
+}
+#main-section .restaurant-tables table tbody tr.maintained {
+  color: red;
+  background-color: rgba(255, 0, 0, 0.192);
+  pointer-events: none;
+}
+#main-section .restaurant-tables table tbody td .form-check {
+  display: flex;
+  justify-content: center;
+}
+#main-section .restaurant-tables table tbody td .form-check .form-check-input {
+  border: 1px gray solid;
+}
+#main-section .restaurant-tables table tbody td .form-check .form-check-input:checked {
+  background-color: #eab308;
+}
 
 #booking-details .top-title {
   font-weight: bold;
@@ -141,10 +188,24 @@ footer p {
 #update-booking-form .form-groups .form-group.created-at textarea {
   background-color: transparent;
 }
+#update-booking-form .form-groups .form-group.tables-assigned input,
+#update-booking-form .form-groups .form-group.tables-assigned p,
+#update-booking-form .form-groups .form-group.tables-assigned textarea {
+  background-color: transparent;
+}
+#update-booking-form .form-groups .form-group .message {
+  display: flex;
+  gap: 5px;
+  color: red;
+  font-weight: 500;
+  padding-left: 5px;
+  margin-top: 3px;
+}
 #update-booking-form .btns {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  margin-bottom: 30px;
 }
 #update-booking-form .btns .submit-btn {
   display: flex;
@@ -168,6 +229,92 @@ footer p {
   color: #1f2937;
 }
 #update-booking-form .btns .submit-btn .spinner-border {
+  display: flex;
+  height: 19.2px;
+  width: 19.2px;
+  color: white;
+  margin: 0 auto;
+}
+
+#filter-tables-form {
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 15px 0 20px;
+}
+#filter-tables-form .filter-tables-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+#filter-tables-form .form-groups {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 16px;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 5px;
+}
+#filter-tables-form .form-groups .form-group {
+  flex: 1 1 calc(50% - 16px);
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+}
+#filter-tables-form .form-groups .form-group label {
+  font-weight: bold;
+  color: #4b5563;
+  margin-bottom: 4px;
+  padding-left: 5px;
+}
+#filter-tables-form .form-groups .form-group input,
+#filter-tables-form .form-groups .form-group p,
+#filter-tables-form .form-groups .form-group textarea {
+  background-color: white;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 1px gray;
+  margin: 0;
+  outline: none;
+  border: none;
+}
+#filter-tables-form .form-groups .form-group.status input,
+#filter-tables-form .form-groups .form-group.status p,
+#filter-tables-form .form-groups .form-group.status textarea {
+  background-color: transparent;
+}
+#filter-tables-form .form-groups .form-group.created-at input,
+#filter-tables-form .form-groups .form-group.created-at p,
+#filter-tables-form .form-groups .form-group.created-at textarea {
+  background-color: transparent;
+}
+#filter-tables-form .btns {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+#filter-tables-form .btns .submit-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 6px;
+  background-color: #1f2937;
+  color: white;
+  outline: none;
+  border: none;
+  padding: 6px 15px;
+  text-decoration: none;
+  border: 2px #1f2937 solid;
+  margin-top: 5px;
+}
+#filter-tables-form .btns .submit-btn:hover {
+  background-color: white;
+  color: #1f2937;
+}
+#filter-tables-form .btns .submit-btn:hover .spinner-border {
+  color: #1f2937;
+}
+#filter-tables-form .btns .submit-btn .spinner-border {
   display: flex;
   height: 19.2px;
   width: 19.2px;
@@ -261,7 +408,8 @@ footer p {
   color: white;
   margin: 0 auto;
 }
-#booking-processing .processing .tab-content .reject-form .form-group label {
+#booking-processing .processing .tab-content .reject-form .form-group label,
+#booking-processing .processing .tab-content .cancel-form .form-group label {
   display: block;
   color: #4b5563;
   font-weight: 600;
@@ -269,7 +417,9 @@ footer p {
   padding-left: 5px;
 }
 #booking-processing .processing .tab-content .reject-form .form-group input,
-#booking-processing .processing .tab-content .reject-form .form-group textarea {
+#booking-processing .processing .tab-content .reject-form .form-group textarea,
+#booking-processing .processing .tab-content .cancel-form .form-group input,
+#booking-processing .processing .tab-content .cancel-form .form-group textarea {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #d1d5db;
@@ -277,11 +427,14 @@ footer p {
   outline: none;
 }
 #booking-processing .processing .tab-content .reject-form .form-group input:focus,
-#booking-processing .processing .tab-content .reject-form .form-group textarea:focus {
+#booking-processing .processing .tab-content .reject-form .form-group textarea:focus,
+#booking-processing .processing .tab-content .cancel-form .form-group input:focus,
+#booking-processing .processing .tab-content .cancel-form .form-group textarea:focus {
   border-color: #eab308;
   box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.5);
 }
-#booking-processing .processing .tab-content .reject-form .form-group .message {
+#booking-processing .processing .tab-content .reject-form .form-group .message,
+#booking-processing .processing .tab-content .cancel-form .form-group .message {
   display: none;
   column-gap: 5px;
   color: red;
@@ -360,55 +513,33 @@ footer p {
   margin: 0 auto;
 }
 
-#cancel-booking {
+#update-assign-tables {
   margin-top: 20px;
 }
-#cancel-booking .open-cancel-booking-btn {
+#update-assign-tables .open-btn {
   display: flex;
   align-items: center;
   gap: 6px;
   color: white;
   padding: 5px 15px;
   border-radius: 4px;
-  background-color: #eab308;
+  background-color: #1f2937;
   font-weight: bold;
   font-size: 1rem;
-  border: 2px #eab308 solid;
+  border: 2px #1f2937 solid;
+  margin-bottom: 15px;
 }
-#cancel-booking .open-cancel-booking-btn:hover {
+#update-assign-tables .open-btn:hover {
   background-color: white;
   color: #1f2937;
 }
-#cancel-booking .form-group label {
-  display: block;
-  color: #4b5563;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-  padding-left: 5px;
-}
-#cancel-booking .form-group input,
-#cancel-booking .form-group textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  outline: none;
-}
-#cancel-booking .form-group input:focus,
-#cancel-booking .form-group textarea:focus {
-  border-color: #eab308;
-  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.5);
-}
-#cancel-booking .confirm-cancel-booking {
+#update-assign-tables .confirm-assign-tables {
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-#cancel-booking .confirm-cancel-booking .btns {
-  display: flex;
+  justify-content: end;
   gap: 10px;
+  margin-top: 15px;
 }
-#cancel-booking .confirm-cancel-booking .btns .cancel-btn {
+#update-assign-tables .confirm-assign-tables .escape-btn {
   color: #1f2937;
   font-weight: bold;
   padding: 4px 15px;
@@ -418,14 +549,14 @@ footer p {
   border: 2px #1f2937 solid;
   color: white;
 }
-#cancel-booking .confirm-cancel-booking .btns .cancel-btn:hover {
+#update-assign-tables .confirm-assign-tables .escape-btn:hover {
   color: black;
   background-color: white;
 }
-#cancel-booking .confirm-cancel-booking .btns .cancel-btn:hover .spinner-border {
+#update-assign-tables .confirm-assign-tables .escape-btn:hover .spinner-border {
   color: #ca8a04;
 }
-#cancel-booking .confirm-cancel-booking .btns .submit-btn {
+#update-assign-tables .confirm-assign-tables .submit-btn {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -436,17 +567,17 @@ footer p {
   border: 2px #eab308 solid;
   background-color: #eab308;
 }
-#cancel-booking .confirm-cancel-booking .btns .submit-btn i {
+#update-assign-tables .confirm-assign-tables .submit-btn i {
   font-size: 1.2rem;
 }
-#cancel-booking .confirm-cancel-booking .btns .submit-btn:hover {
+#update-assign-tables .confirm-assign-tables .submit-btn:hover {
   color: black;
   background-color: white;
 }
-#cancel-booking .confirm-cancel-booking .btns .submit-btn:hover .spinner-border {
+#update-assign-tables .confirm-assign-tables .submit-btn:hover .spinner-border {
   color: #ca8a04;
 }
-#cancel-booking .confirm-cancel-booking .btns .submit-btn .spinner-border {
+#update-assign-tables .confirm-assign-tables .submit-btn .spinner-border {
   display: flex;
   height: 19.2px;
   width: 19.2px;
@@ -454,7 +585,7 @@ footer p {
   margin: 0 auto;
 }
 
-#approve-booking label {
+#approve-booking .approve-booking-title {
   font-weight: bold;
   font-size: 1.3rem;
   border-bottom: 1px #1f2937 solid;
@@ -476,53 +607,6 @@ footer p {
 }
 #approve-booking .summary p i {
   font-size: 1.1rem;
-}
-#approve-booking .restaurant-tables {
-  margin-top: 10px;
-}
-#approve-booking .restaurant-tables table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-#approve-booking .restaurant-tables table thead {
-  background-color: #1f2937;
-  color: white;
-}
-#approve-booking .restaurant-tables table th {
-  padding: 10px 5px;
-  border: 1px solid white;
-  text-align: center;
-}
-#approve-booking .restaurant-tables table td {
-  padding: 10px 5px;
-  border: 1px solid rgba(75, 85, 99, 0.368627451);
-  text-align: center;
-}
-#approve-booking .restaurant-tables table tbody tr {
-  cursor: pointer;
-}
-#approve-booking .restaurant-tables table tbody tr:nth-child(even) {
-  background-color: #f3f4f6;
-}
-#approve-booking .restaurant-tables table tbody tr:hover {
-  background-color: rgba(234, 178, 8, 0.2509803922);
-}
-#approve-booking .restaurant-tables table tbody tr.maintained {
-  color: red;
-  background-color: rgba(255, 0, 0, 0.192);
-  pointer-events: none;
-}
-#approve-booking .restaurant-tables table tbody td .form-check {
-  display: flex;
-  justify-content: center;
-}
-#approve-booking .restaurant-tables table tbody td .form-check .form-check-input {
-  border: 1px gray solid;
-}
-#approve-booking .restaurant-tables table tbody td .form-check .form-check-input:checked {
-  background-color: #eab308;
 }
 #approve-booking .empty-result {
   display: flex;
