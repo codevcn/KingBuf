@@ -46,3 +46,20 @@ function getCurrentPath() {
 function navigateWithPayload(href, params) {
    window.location.href = setURLWithQueryString(href, params)
 }
+
+function extractErrorMessage(error) {
+   if (error.response) {
+      // Server đã trả về response với status code khác 2xx
+      const data = error.response.data
+      if (data && typeof data === "object") {
+         return data.message || JSON.stringify(data)
+      }
+   } else if (error.request) {
+      // Request đã được gửi nhưng không nhận được response
+      return "No response received from server"
+   } else {
+      // Một lỗi khác trong quá trình thiết lập request
+      return error.message || "An unknown error occurred"
+   }
+   return "An error occurred"
+}

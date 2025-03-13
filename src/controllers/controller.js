@@ -309,7 +309,7 @@ export const getBookingsHistoryPage = (req, res, next) => {
 }
 
 export const getAdminLoginPage = (req, res, next) => {
-   res.render("admin/login/login-page")
+   res.render("admin/login/login-page", { isAdmin: false })
 }
 
 export const getAdminAllBookingsPage = (req, res, next) => {

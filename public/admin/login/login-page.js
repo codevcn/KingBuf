@@ -2,12 +2,8 @@ const loginFormEle = document.getElementById("login-form")
 
 const togglePasswordVisibility = () => {
    const passwordField = document.getElementById("password-input")
-   const showPasswordBtn = loginFormEle.querySelector(
-      ".hide-show-password-btn.show"
-   )
-   const hidePasswordBtn = loginFormEle.querySelector(
-      ".hide-show-password-btn.hide"
-   )
+   const showPasswordBtn = loginFormEle.querySelector(".hide-show-password-btn.show")
+   const hidePasswordBtn = loginFormEle.querySelector(".hide-show-password-btn.hide")
 
    if (passwordField.type === "password") {
       passwordField.type = "text"
@@ -50,14 +46,22 @@ const loginAdmin = (e) => {
    const formData = extractFormData(formEle)
    if (validateLoginData(formData)) {
       showLoginLoading(true)
-      formEle.submit()
+      authService
+         .login(formData)
+         .then(() => {
+            window.location.href = "/bookings-history"
+         })
+         .catch((error) => {
+            toaster.error(extractErrorMessage(error))
+         })
+         .finally(() => {
+            showLoginLoading(false)
+         })
    }
 }
 
 const init = () => {
-   const hideShowPasswordBtns = loginFormEle.querySelectorAll(
-      ".hide-show-password-btn"
-   )
+   const hideShowPasswordBtns = loginFormEle.querySelectorAll(".hide-show-password-btn")
    for (const btn of hideShowPasswordBtns) {
       btn.addEventListener("click", togglePasswordVisibility)
    }

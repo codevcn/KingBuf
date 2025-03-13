@@ -1,9 +1,14 @@
+const clientAxios = axios.create({ baseURL: "http://localhost:3000" })
+
 class BookingService {
    async submitBooking(data) {
-      await new Promise((resolve, reject) => {
-         setTimeout(() => {
-            reject(new Error("something went vcn error!!"))
-         }, 1000)
+      const { data } = await clientAxios.post("/api/reservations/reserve", {
+         Cus_FullName: formData["full-name"],
+         Cus_Phone: formData["phone"],
+         ArrivalTime: "12/29/2025 05:00",
+         NumAdults: formData["adults-count"],
+         NumChildren: formData["children-count"],
+         Note: formData["note"],
       })
    }
 
@@ -83,3 +88,12 @@ class TablesService {
 }
 
 const tablesService = new TablesService()
+
+class AuthService {
+   async login(formData) {
+      const { data } = await clientAxios.post("/api/admin/login", formData)
+      return data
+   }
+}
+
+const authService = new AuthService()
