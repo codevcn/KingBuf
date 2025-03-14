@@ -1,5 +1,122 @@
 @use "../../utils/global-styles.scss" as gs;
 
+@mixin reject-cancel-styling {
+   .notice {
+      font-size: 1.1rem;
+      margin: 0;
+   }
+
+   .btns {
+      display: flex;
+      justify-content: end;
+      gap: 10px;
+
+      .submit-btn {
+         display: flex;
+         gap: 5px;
+         align-items: center;
+         color: white;
+         border: 2px red solid;
+         border-radius: 4px;
+         padding: 6px 15px;
+         background-color: red;
+
+         &:hover {
+            background-color: white;
+            color: red;
+
+            .spinner-border {
+               color: red;
+            }
+         }
+
+         .spinner-border {
+            display: flex;
+            height: 19.2px;
+            width: 19.2px;
+            color: white;
+            margin: 0 auto;
+         }
+
+         &.complete-btn {
+            background-color: gs.$dark-bg;
+            border-color: gs.$dark-bg;
+
+            &:hover {
+               background-color: white;
+               color: gs.$dark-bg;
+
+               .spinner-border {
+                  color: gs.$dark-bg;
+               }
+            }
+         }
+      }
+   }
+}
+
+@mixin form-groups-styling {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 10px;
+   border-radius: 8px;
+   width: 100%;
+   margin-top: 10px;
+
+   .form-group {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+
+      label {
+         font-weight: bold;
+         color: gs.$gray;
+         margin-bottom: 4px;
+         padding-left: 5px;
+      }
+
+      input,
+      p,
+      textarea,
+      .dropdown-toggle {
+         background-color: white;
+         padding: 8px;
+         border-radius: 4px;
+         box-shadow: 0 0 1px gray;
+         margin: 0;
+         outline: none;
+         border: none;
+         flex-grow: 1;
+      }
+
+      .dropdown {
+         flex-grow: 1;
+
+         .dropdown-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            color: black;
+            width: 100%;
+            height: 100%;
+
+            &::after {
+               color: gray;
+            }
+         }
+
+         .dropdown-menu {
+            .dropdown-item {
+               padding-top: 8px;
+               padding-bottom: 8px;
+               cursor: pointer;
+            }
+         }
+      }
+   }
+}
+
 #main-section {
    min-height: calc(100vh - 60.8px - 68.8px);
    padding: 20px 50px;
@@ -82,7 +199,8 @@
                   &.pending {
                      background-color: gs.$primary-color;
                   }
-                  &.approved, &.completed {
+                  &.approved,
+                  &.completed {
                      background-color: gs.$success-color;
                   }
                   &.arrived {
@@ -198,65 +316,7 @@
    }
 
    .form-groups {
-      display: flex;
-      flex-wrap: wrap;
-      column-gap: 16px;
-      border-radius: 8px;
-      width: 100%;
-      margin-top: 5px;
-
-      .form-group {
-         flex: 1 1 calc(50% - 16px);
-         display: flex;
-         flex-direction: column;
-         margin-top: 15px;
-
-         label {
-            font-weight: bold;
-            color: gs.$gray;
-            margin-bottom: 4px;
-            padding-left: 5px;
-         }
-
-         input,
-         p,
-         textarea,
-         .dropdown-toggle {
-            background-color: white;
-            padding: 8px;
-            border-radius: 4px;
-            box-shadow: 0 0 1px gray;
-            margin: 0;
-            outline: none;
-            border: none;
-         }
-
-         .dropdown {
-            flex-grow: 1;
-
-            .dropdown-toggle {
-               display: flex;
-               justify-content: space-between;
-               align-items: center;
-               gap: 10px;
-               color: black;
-               width: 100%;
-               height: 100%;
-
-               &::after {
-                  color: gray;
-               }
-            }
-
-            .dropdown-menu {
-               .dropdown-item {
-                  padding-top: 8px;
-                  padding-bottom: 8px;
-                  cursor: pointer;
-               }
-            }
-         }
-      }
+      @include form-groups-styling;
    }
 
    .btns {
@@ -297,4 +357,79 @@
          }
       }
    }
+}
+
+.modal-dialog {
+   .modal-content {
+      .modal-header {
+         padding: 10px 20px;
+
+         .modal-title {
+            font-weight: bold;
+         }
+      }
+   }
+}
+
+#reject-booking-modal {
+   .modal-body {
+      .booking-details-title {
+         font-size: 1.2rem;
+         font-weight: bold;
+         border-bottom: 1px gs.$dark-bg solid;
+         padding-bottom: 3px;
+         margin: 0;
+      }
+
+      .form-groups {
+         @include form-groups-styling;
+         margin-bottom: 20px;
+      }
+   }
+}
+
+#cancel-booking-modal {
+   .modal-body {
+      .booking-details-title {
+         font-size: 1.2rem;
+         font-weight: bold;
+         border-bottom: 1px gs.$dark-bg solid;
+         padding-bottom: 3px;
+         margin: 0;
+      }
+
+      .form-groups {
+         @include form-groups-styling;
+         margin-bottom: 20px;
+      }
+   }
+}
+
+#complete-booking-modal {
+   .modal-body {
+      .booking-details-title {
+         font-size: 1.2rem;
+         font-weight: bold;
+         border-bottom: 1px gs.$dark-bg solid;
+         padding-bottom: 3px;
+         margin: 0;
+      }
+
+      .form-groups {
+         @include form-groups-styling;
+         margin-bottom: 20px;
+      }
+   }
+}
+
+#confirm-cancel-form {
+   @include reject-cancel-styling;
+}
+
+#confirm-reject-form {
+   @include reject-cancel-styling;
+}
+
+#confirm-complete-form {
+   @include reject-cancel-styling;
 }

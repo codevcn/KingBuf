@@ -1,5 +1,5 @@
 {
    "watch": ["src_backend"],
-   "ext": "js,scss,ejs",
+   "ext": "js",
    "exec": "node --inspect src_backend/app.js"
 }

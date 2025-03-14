@@ -12,7 +12,7 @@
         <% } else if (booking.Status === 'Completed') { %>
         <span class="status arrived" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Khách đã đến">Khách đã đến</span>
         <% } else if (booking.Status === 'Arrived') { %>
-          <span class="status completed" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn đã được xử lý">Đã hoàn thành</span>
+        <span class="status completed" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn đã được xử lý">Đã hoàn thành</span>
         <% } else if (booking.Status === 'Cancelled') { %>
         <span class="status cancelled" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn đã bị hủy">Đã hủy</span>
         <% } else { %>
@@ -254,20 +254,6 @@
     <section class="processing">
       <ul class="nav nav-tabs">
         <li class="nav-item" role="presentation">
-          <button class="nav-link" id="reject-tab" data-bs-toggle="tab" data-bs-target="#reject-tab-pane" type="button" role="tab">
-            <i class="bi bi-x-circle-fill"></i>
-            <span>Từ chối đơn</span>
-          </button>
-        </li>
-
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="cancel-tab" data-bs-toggle="tab" data-bs-target="#cancel-tab-pane" type="button" role="tab">
-            <i class="bi bi-x-lg"></i>
-            <span>Hủy đơn</span>
-          </button>
-        </li>
-
-        <li class="nav-item" role="presentation">
           <button class="nav-link active" id="approve-tab" data-bs-toggle="tab" data-bs-target="#approve-tab-pane" type="button" role="tab">
             <i class="bi bi-check-circle-fill"></i>
             <span>Duyệt đơn</span>
@@ -276,56 +262,6 @@
       </ul>
 
       <div class="tab-content">
-        <div class="tab-pane fade" id="reject-tab-pane" role="tabpanel" tabindex="0" data-kb-tab-type="reject">
-          <form class="reject-form">
-            <div class="form-group">
-              <label for="cancel-reject-input">Lý do từ chối đơn</label>
-              <textarea id="reject-booking-input" rows="3" placeholder="Nhập lý do từ chối đơn ở đây..."></textarea>
-            </div>
-          </form>
-
-          <section hidden class="processing-result">
-            <div class="result-title">
-              <i class="bi bi-exclamation-triangle-fill"></i>
-              <span>Xử lý đơn thất bại</span>
-            </div>
-            <p class="result-message"></p>
-          </section>
-
-          <div class="complete-processing">
-            <span></span>
-            <button class="submit-btn">
-              <i class="bi bi-check-all"></i>
-              <span>Hoàn tất xử lý đơn</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="tab-pane fade" id="cancel-tab-pane" role="tabpanel" tabindex="0" data-kb-tab-type="cancel">
-          <form class="cancel-form">
-            <div class="form-group">
-              <label for="cancel-reject-input">Lý do hủy đơn</label>
-              <textarea id="cancel-booking-input" rows="3" placeholder="Nhập lý do hủy đơn ở đây..."></textarea>
-            </div>
-          </form>
-
-          <section hidden class="processing-result">
-            <div class="result-title">
-              <i class="bi bi-exclamation-triangle-fill"></i>
-              <span>Xử lý đơn thất bại</span>
-            </div>
-            <p class="result-message"></p>
-          </section>
-
-          <div class="complete-processing">
-            <span></span>
-            <button class="submit-btn">
-              <i class="bi bi-check-all"></i>
-              <span>Hoàn tất xử lý đơn</span>
-            </button>
-          </div>
-        </div>
-
         <div class="tab-pane fade show active" id="approve-tab-pane" role="tabpanel" tabindex="0" data-kb-tab-type="approve">
           <section id="approve-booking">
             <label class="approve-booking-title">Danh sách bàn còn trống của nhà hàng</label>

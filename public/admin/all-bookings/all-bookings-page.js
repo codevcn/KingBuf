@@ -29,33 +29,17 @@ const getBookingId = (submitBtn) =>
    submitBtn.closest(".booking-card").getAttribute("data-kb-booking-id")
 
 const completeBooking = (e) => {
+   e.preventDefault()
    const submitBtn = e.currentTarget
    const backupContent = e.target.innerHTML
    submitBtn.innerHTML = createLoading()
    processBookingService
-      .completeBooking(getBookingId(submitBtn))
+      .completeBooking(getBookingIdFromBtn(submitBtn))
       .then(() => {
-         reloadPage()
+         toaster.success("ABC")
       })
       .catch((error) => {
-         toaster.error(error.message)
-      })
-      .finally(() => {
-         submitBtn.innerHTML = backupContent
-      })
-}
-
-const cancelBooking = (e) => {
-   const submitBtn = e.currentTarget
-   const backupContent = e.target.innerHTML
-   submitBtn.innerHTML = createLoading()
-   processBookingService
-      .cancelBooking(getBookingId(submitBtn), "Khách không đến")
-      .then(() => {
-         reloadPage()
-      })
-      .catch((error) => {
-         toaster.error(error.message)
+         toaster.error(extractErrorMessage(error))
       })
       .finally(() => {
          submitBtn.innerHTML = backupContent
@@ -73,6 +57,118 @@ const setArrivedStatus = (e) => {
       })
       .catch((error) => {
          toaster.error(error.message)
+      })
+      .finally(() => {
+         submitBtn.innerHTML = backupContent
+      })
+}
+
+const showConfirmCancelBookingModal = (e) => {
+   const bookingData = JSON.parse(e.currentTarget.getAttribute("data-kb-booking-data"))
+   const confirmSection = document.getElementById("confirm-cancel-form")
+   confirmSection
+      .querySelector(".submit-btn")
+      .setAttribute("data-kb-booking-id", bookingData.ReservationID)
+   const formGroups = document.querySelector(
+      "#cancel-booking-modal .modal-body .booking-details .form-groups"
+   )
+   formGroups.querySelector(".full-name p").textContent = bookingData.Cus_FullName
+   formGroups.querySelector(".phone p").textContent = bookingData.Cus_Phone
+   formGroups.querySelector(".date-time p").textContent = bookingData.ArrivalTime
+   formGroups.querySelector(".people-count p").textContent =
+      bookingData.NumAdults + bookingData.NumChildren
+   formGroups.querySelector(".note p").textContent = bookingData.Note || "Không có"
+   formGroups.querySelector(".created-at p").textContent = bookingData.CreatedAt
+
+   const confirmBooking = new bootstrap.Modal("#cancel-booking-modal")
+   confirmBooking.show()
+}
+
+const showConfirmRejectBookingModal = (e) => {
+   const bookingData = JSON.parse(e.currentTarget.getAttribute("data-kb-booking-data"))
+   const confirmSection = document.getElementById("confirm-reject-form")
+   confirmSection
+      .querySelector(".submit-btn")
+      .setAttribute("data-kb-booking-id", bookingData.ReservationID)
+   const formGroups = document.querySelector(
+      "#reject-booking-modal .modal-body .booking-details .form-groups"
+   )
+   formGroups.querySelector(".full-name p").textContent = bookingData.Cus_FullName
+   formGroups.querySelector(".phone p").textContent = bookingData.Cus_Phone
+   formGroups.querySelector(".date-time p").textContent = bookingData.ArrivalTime
+   formGroups.querySelector(".people-count p").textContent =
+      bookingData.NumAdults + bookingData.NumChildren
+   formGroups.querySelector(".note p").textContent = bookingData.Note
+   formGroups.querySelector(".created-at p").textContent = bookingData.CreatedAt
+
+   const confirmBooking = new bootstrap.Modal("#reject-booking-modal")
+   confirmBooking.show()
+}
+
+const showConfirmCompleteBookingModal = (e) => {
+   const bookingData = JSON.parse(e.currentTarget.getAttribute("data-kb-booking-data"))
+   const confirmSection = document.getElementById("confirm-complete-form")
+   confirmSection
+      .querySelector(".submit-btn")
+      .setAttribute("data-kb-booking-id", bookingData.ReservationID)
+   const formGroups = document.querySelector(
+      "#complete-booking-modal .modal-body .booking-details .form-groups"
+   )
+   formGroups.querySelector(".full-name p").textContent = bookingData.Cus_FullName
+   formGroups.querySelector(".phone p").textContent = bookingData.Cus_Phone
+   formGroups.querySelector(".date-time p").textContent = bookingData.ArrivalTime
+   formGroups.querySelector(".people-count p").textContent =
+      bookingData.NumAdults + bookingData.NumChildren
+   formGroups.querySelector(".note p").textContent = bookingData.Note
+   formGroups.querySelector(".created-at p").textContent = bookingData.CreatedAt
+
+   const confirmBooking = new bootstrap.Modal("#complete-booking-modal")
+   confirmBooking.show()
+}
+
+const getBookingIdFromBtn = (submitBtn) => submitBtn.getAttribute("data-kb-booking-id")
+
+const validateReason = (reason) => {
+   if (!reason) {
+      toaster.error("Xử lý đơn thất bại", "Trường lý do không được bỏ trống.")
+      return false
+   }
+   return true
+}
+
+const rejectBooking = (e) => {
+   e.preventDefault()
+   const reason = document.getElementById("reject-booking-input").value
+   if (validateReason(reason)) {
+      const submitBtn = e.currentTarget
+      const backupContent = e.target.innerHTML
+      submitBtn.innerHTML = createLoading()
+      processBookingService
+         .rejectBooking(getBookingIdFromBtn(submitBtn), reason)
+         .then(() => {
+            toaster.success("ABC")
+         })
+         .catch((error) => {
+            toaster.error(extractErrorMessage(error))
+         })
+         .finally(() => {
+            submitBtn.innerHTML = backupContent
+         })
+   }
+}
+
+const cancelBooking = (e) => {
+   e.preventDefault()
+   const submitBtn = e.currentTarget
+   const backupContent = e.target.innerHTML
+   submitBtn.innerHTML = createLoading()
+   processBookingService
+      .cancelBooking(getBookingIdFromBtn(submitBtn), "Khách không đến")
+      .then(() => {
+         toaster.success("ABC")
+      })
+      .catch((error) => {
+         toaster.error(extractErrorMessage(error))
       })
       .finally(() => {
          submitBtn.innerHTML = backupContent
@@ -100,49 +196,51 @@ const init = () => {
 init()
 document.addEventListener("DOMContentLoaded", function () {
    // Lấy tham số từ URL
-   const params = new URLSearchParams(window.location.search);
+   const params = new URLSearchParams(window.location.search)
 
    // Gán giá trị vào input trạng thái đơn
-   const statusInput = document.querySelector("#booking-status-input");
-   const statusButton = document.querySelector("#booking-status-select button");
-   const selectedStatus = params.get("status");
+   const statusInput = document.querySelector("#booking-status-input")
+   const statusButton = document.querySelector("#booking-status-select button")
+   const selectedStatus = params.get("status")
 
    if (selectedStatus) {
-       statusInput.value = selectedStatus;
-       const selectedItem = document.querySelector(`.dropdown-item[data-kb-table-status="${selectedStatus}"]`);
-       if (selectedItem) {
-           statusButton.textContent = selectedItem.textContent;
-       }
+      statusInput.value = selectedStatus
+      const selectedItem = document.querySelector(
+         `.dropdown-item[data-kb-table-status="${selectedStatus}"]`
+      )
+      if (selectedItem) {
+         statusButton.textContent = selectedItem.textContent
+      }
    }
 
    // Gán giá trị vào input thời gian nếu có
-   const timeInput = document.querySelector('input[name="time"]');
+   const timeInput = document.querySelector('input[name="time"]')
    if (params.get("time")) {
-       timeInput.value = params.get("time");
+      timeInput.value = params.get("time")
    }
 
    // Gán giá trị vào input ngày nếu có
-   const dateInput = document.querySelector('input[name="date"]');
+   const dateInput = document.querySelector('input[name="date"]')
    if (params.get("date")) {
-       dateInput.value = params.get("date");
+      dateInput.value = params.get("date")
    }
 
    // Gán giá trị vào input số điện thoại nếu có
-   const phoneInput = document.querySelector('input[name="phonenumber"]');
+   const phoneInput = document.querySelector('input[name="phonenumber"]')
    if (params.get("phonenumber")) {
-       phoneInput.value = params.get("phonenumber");
+      phoneInput.value = params.get("phonenumber")
    }
 
    // Reset thời gian khi nhập ngày & ngược lại
    dateInput.addEventListener("input", function () {
-       if (dateInput.value) {
-           timeInput.value = ""; // Xóa giá trị của "Thời gian đến hạn"
-       }
-   });
+      if (dateInput.value) {
+         timeInput.value = "" // Xóa giá trị của "Thời gian đến hạn"
+      }
+   })
 
    timeInput.addEventListener("input", function () {
-       if (timeInput.value) {
-           dateInput.value = ""; // Xóa giá trị của "Trong ngày"
-       }
-   });
-});
+      if (timeInput.value) {
+         dateInput.value = "" // Xóa giá trị của "Trong ngày"
+      }
+   })
+})

@@ -32,30 +32,24 @@ const validateLoginData = (formData) => {
    return true
 }
 
-const showLoginLoading = (show) => {
-   const submitBtn = loginFormEle.querySelector(".submit-btn")
-   submitBtn.innerHTML = ""
-   if (show) {
-      submitBtn.innerHTML = createLoading()
-   }
-}
-
 const loginAdmin = (e) => {
    e.preventDefault()
    const formEle = e.target
    const formData = extractFormData(formEle)
    if (validateLoginData(formData)) {
-      showLoginLoading(true)
+      const submitBtn = loginFormEle.querySelector(".submit-btn")
+      const backupContent = submitBtn.innerHTML
+      submitBtn.innerHTML = createLoading()
       authService
          .login(formData)
-         .then(() => { 
+         .then(() => {
             window.location.href = "/admin/all-bookings/"
          })
          .catch((error) => {
             toaster.error(extractErrorMessage(error))
          })
          .finally(() => {
-            showLoginLoading(false)
+            submitBtn.innerHTML = backupContent
          })
    }
 }

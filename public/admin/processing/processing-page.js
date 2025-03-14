@@ -24,14 +24,6 @@ const showError = (message, buttonEle) => {
 const getBookingId = () =>
    document.getElementById("update-booking-form").getAttribute("data-kb-booking-id")
 
-const validateReason = (reason) => {
-   if (!reason) {
-      toaster.error("Xử lý đơn thất bại", "Trường lý do không được bỏ trống.")
-      return false
-   }
-   return true
-}
-
 const validateApproving = (pickedTables) => {
    if (!pickedTables || pickedTables.length === 0) {
       toaster.error("Xử lý đơn thất bại", "Chưa có bất cứ bàn nào được chọn cho đơn.")
@@ -58,53 +50,11 @@ const approveBooking = (buttonEle) => {
    }
 }
 
-const rejectBooking = (buttonEle) => {
-   const reason = document.getElementById("reject-booking-input").value
-   if (validateReason(reason)) {
-      showProcessBookingLoading(true, buttonEle)
-      processBookingService
-         .rejectBooking(getBookingId(), reason)
-         .then(() => {
-            reloadPage()
-         })
-         .catch((error) => {
-            showError(error.message, buttonEle)
-         })
-         .finally(() => {
-            showProcessBookingLoading(false, buttonEle)
-         })
-   }
-}
-
-const cancelBooking = (buttonEle) => {
-   const reason = document.getElementById("cancel-booking-input").value
-   if (validateReason(reason)) {
-      showProcessBookingLoading(true, buttonEle)
-      processBookingService
-         .cancelBooking(getBookingId(), reason)
-         .then(() => {
-            reloadPage()
-         })
-         .catch((error) => {
-            showError(error.message, buttonEle)
-         })
-         .finally(() => {
-            showProcessBookingLoading(false, buttonEle)
-         })
-   }
-}
-
 const completeProcessBooking = (e) => {
    const buttonEle = e.currentTarget
    const type = buttonEle.closest("[data-kb-tab-type]").getAttribute("data-kb-tab-type")
    showError(undefined, buttonEle)
    switch (type) {
-      case "reject":
-         rejectBooking(buttonEle)
-         break
-      case "cancel":
-         cancelBooking(buttonEle)
-         break
       case "approve":
          approveBooking(buttonEle)
          break
