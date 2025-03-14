@@ -1,23 +1,26 @@
 const clientAxios = axios.create({ baseURL: "http://localhost:3000" })
 
 class BookingService {
-   async submitBooking(data) {
+   async submitBooking(formData) {
       const { data } = await clientAxios.post("/api/reservations/reserve", {
          Cus_FullName: formData["full-name"],
          Cus_Phone: formData["phone"],
-         ArrivalTime: "12/29/2025 05:00",
+         ArrivalTime: formData["date"] + " " + formData["time"],
          NumAdults: formData["adults-count"],
          NumChildren: formData["children-count"],
          Note: formData["note"],
       })
    }
 
-   async updateBooking(bookingId, data) {
-      await new Promise((resolve, reject) => {
-         setTimeout(() => {
-            reject(new Error("something went vcn error!!"))
-         }, 1000)
+   async updateBooking(bookingId, formData) {
+      const { data } = await clientAxios.put(`/api/reservations/update/${bookingId}`, {
+         Cus_FullName: formData["full-name"],
+         ArrivalTime: formData["date"] + " " + formData["time"]+':00',
+         NumAdults: formData["adults-count"],
+         NumChildren: formData["children-count"],
+         Note: formData["note"],
       })
+      console.log(data);
    }
 }
 
@@ -62,28 +65,21 @@ class ProcessBookingService {
 const processBookingService = new ProcessBookingService()
 
 class TablesService {
-   async addNewTable(data) {
-      await new Promise((resolve, reject) => {
-         setTimeout(() => {
-            reject(new Error("something went vcn error!!"))
-         }, 1000)
+   async addNewTable(formData) {
+      await clientAxios.post("/api/diningTable/createDiningTable", {
+         TableNumber: formData["table-number"],
+         Capacity: formData["capacity"],
+         Location: formData["location"],
+         Status: formData["status"],
       })
    }
 
    async deleteTable(tableId) {
-      await new Promise((resolve, reject) => {
-         setTimeout(() => {
-            reject(new Error("something went vcn error!!"))
-         }, 1000)
-      })
+      await clientAxios.delete(`/api/diningTable/deleteDiningTable/${tableId}`)
    }
 
    async updateTable(tableId, updateData) {
-      await new Promise((resolve, reject) => {
-         setTimeout(() => {
-            reject(new Error("something went vcn error!!"))
-         }, 1000)
-      })
+      await clientAxios.put(`/api/diningTable/updateDiningTable/${tableId}`, updateData)
    }
 }
 

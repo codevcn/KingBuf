@@ -6,7 +6,7 @@ import {
    getAdminAllBookingsPage,
    getProcessingPage,
    getAllTablesPage,
-} from "../controllers/controller.js"
+} from "../controller_fe/controller.js"
 
 const router = express.Router()
 

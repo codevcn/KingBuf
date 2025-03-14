@@ -119,12 +119,13 @@ const confirmBooking = () => {
    bookingService
       .submitBooking(reservationPageShares.bookingData)
       .then(() => {
-         window.location.href = "/booking-history"
+         console.log("tick",)
+         window.location.href = `/bookings-history?Cus_FullName=${reservationPageShares.bookingData["full-name"]}&Cus_Phone=${reservationPageShares.bookingData["phone"]}`
       })
       .catch((error) => {
          toaster.error(
             "Đặt chỗ thất bại",
-            "Yêu cầu đặt chỗ của bạn hiện không thể được giải quyết, vui lòng quy lại sau chốc lát."
+            extractErrorMessage(error),
          )
       })
       .finally(() => {
@@ -147,3 +148,4 @@ const init = () => {
       .addEventListener("click", confirmBooking)
 }
 init()
+

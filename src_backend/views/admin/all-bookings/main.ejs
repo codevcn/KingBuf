@@ -3,7 +3,7 @@
     <h3>Tất cả các đơn đặt bàn</h3>
   </section>
 
-  <form id="filter-bookings-form">
+  <form id="filter-bookings-form" action="/admin/all-bookings" method="GET">
     <h2 class="filter-bookings-title">Bộ lọc đơn</h2>
 
     <div class="form-groups">
@@ -16,6 +16,9 @@
           </button>
           <ul class="dropdown-menu">
             <li>
+              <div class="dropdown-item" data-kb-table-status="All">Tất cả</div>
+            </li>
+            <li>
               <div class="dropdown-item" data-kb-table-status="Pending">Chưa được xử lý</div>
             </li>
             <li>
@@ -25,10 +28,13 @@
               <div class="dropdown-item" data-kb-table-status="Approved">Đã duyệt</div>
             </li>
             <li>
-              <div class="dropdown-item" data-kb-table-status="Rejected">Đã từ chối</div>
+              <div class="dropdown-item" data-kb-table-status="Completed">Đã hoàn thành</div>
             </li>
             <li>
               <div class="dropdown-item" data-kb-table-status="Arrived">Khách đã đến</div>
+            </li>
+            <li>
+              <div class="dropdown-item" data-kb-table-status="Rejected">Đã từ chối</div>
             </li>
           </ul>
         </div>
@@ -36,7 +42,18 @@
 
       <div class="form-group time">
         <label for="filter-bookings-time-input">Thời gian đến hạn</label>
-        <input type="time" id="filter-bookings-time-input" name="time">
+        <input type="number" id="filter-bookings-time-input" name="time">
+        <div class="message"></div>
+      </div>
+
+      <div class="form-group time">
+        <label for="filter-bookings-time-input">Số điện thoại</label>
+        <input type="phonenumber" id="filter-bookings-time-input" name="phonenumber">
+        <div class="message"></div>
+      </div>
+      <div class="form-group time">
+        <label for="filter-bookings-time-input">Trong ngày</label>
+        <input type="date" id="filter-bookings-time-input" name="date">
         <div class="message"></div>
       </div>
     </div>
@@ -59,9 +76,9 @@
   <section class="result-section">
     <% if (bookings && bookings.length > 0) { %>
     <div class="booking-list">
-      <% bookings.forEach(({ReservationID,Cus_FullName,Cus_Phone,ArrivalTime,NumAdults,NumChildren,Note,Status,CreatedAt,TablesList,Reason}) => { %>
+      <% bookings.forEach(({ReservationID,Cus_FullName,Cus_Phone,ArrivalTime,NumAdults,NumChildren,Note,Status,CreatedAt,TablesList,reject_reason}) => { %>
       <div class="booking-card" data-kb-booking-id="<%= ReservationID%>">
-        <div class="card-title">
+        <div class="card-title"> 
           <h5>Đơn #<%= ReservationID %></h5>
           <% if (Status === 'Pending') { %>
           <div class="status pending">Chưa được xử lý</div>
@@ -71,6 +88,8 @@
           <div class="status cancelled">Đã hủy</div>
           <% } else if (Status === 'Arrived') { %>
           <div class="status arrived">Khách đã đến</div>
+          <% } else if (Status === 'Completed') { %>
+            <div class="status completed">Đã hoàn thành</div>
           <% } else { %>
           <div class="status rejected">Đã từ chối</div>
           <% } %>
@@ -83,9 +102,9 @@
           <p><strong>Ghi chú:</strong> <%= Note || "Không có" %></p>
           <p><strong>Ngày tạo đơn:</strong> <%= CreatedAt %></p>
         </div>
-        <% if (Reason) { %>
+        <% if (reject_reason) { %>
         <div class="reject-reason">
-          <strong>Lý do:</strong> <%= Reason %>
+          <strong>Lý do từ chối:</strong> <%= reject_reason %>
         </div>
         <% } else if (TablesList && TablesList.length > 0) { %>
         <div class="tables-list">
@@ -96,18 +115,22 @@
         </div>
         <% } %>
         <div class="booking-actions">
-          <% if (Status === 'Arrived') { %>
+          <% if (Status === 'Pending') { %>
+          <button type="button" class="action-btn" id="reject-booking-btn">
+            <i class="bi bi-clipboard-check"></i>
+            <span>Từ chối đơn</span>
+          </button>
+          <% } else if (Status === 'Arrived') { %>
           <button type="button" class="action-btn" id="complete-booking-btn">
             <i class="bi bi-clipboard-check"></i>
             <span>Hoàn thành đơn</span>
           </button>
-          <% } else if (Status !== 'Arrived' && Status !== 'Rejected' && Status !== 'Cancelled') { %>
-          <% if (Status !== 'Pending') { %>
+          <% } if (Status === 'Approved') { %>
           <button type="button" class="action-btn" id="set-arrived-cus-btn">
             <i class="bi bi-person-fill-check"></i>
             <span>Khách đã đến</span>
           </button>
-          <% } %>
+          <% } if (Status === 'Approved') { %>
           <button type="button" class="action-btn" id="cancel-booking-btn">
             <i class="bi bi-person-fill-check"></i>
             <span>Hủy đơn</span>
@@ -115,15 +138,16 @@
           <% } %>
           <% if (Status === 'Pending' || Status === 'Approved') { %>
           <a class="action-btn" href="/admin/processing/<%= ReservationID %>">
-            <% if (Status === 'Pending') { %>
-            <span>Xử lý đơn</span>
-            <i class="bi bi-arrow-right-circle"></i>
-            <% } else if (Status === 'Approved') { %>
             <span>Cập nhật đơn</span>
-            <i class="bi bi-arrow-repeat"></i>
-            <% } %>
+            <i class="bi bi-arrow-right-circle"></i>
           </a>
           <% } %>
+              <% if (Status === 'Pending') { %>
+            <button type="button" class="action-btn" id="approve-booking-btn">
+              <i class="bi bi-arrow-repeat"></i>
+           <span>Duyệt đơn</span>
+            </button>
+            <% } %>
         </div>
       </div>
       <% }); %>

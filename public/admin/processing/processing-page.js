@@ -146,11 +146,7 @@ const validateUpdate = (formData) => {
    if (!fullName) {
       warning("full-name", "Trường họ và tên không được để trống!")
    }
-   if (phone && !validator.isMobilePhone(phone)) {
-      warning("phone", "Số điện thoại không hợp lệ!")
-   } else if (!phone || phone.length < 10) {
-      warning("phone", "Số điện thoại phải có ít nhất 10 chữ số!")
-   }
+
    if (date) {
       const today = dayjs().format("YYYY-MM-DD")
       if (dayjs(date).isBefore(today, "day")) {
@@ -166,8 +162,8 @@ const validateUpdate = (formData) => {
       warning("adults-count", "Phải có ít nhất 1 người lớn!")
    }
    if (childrenCount) {
-      if (!validator.isInt(childrenCount, { min: 1 })) {
-         warning("children-count", "Số trẻ em phải lớn hơn 0!")
+      if (!validator.isInt(childrenCount, { min: 0 })) {
+         warning("children-count", "Số trẻ em phải lớn hơn hoặc bằng 0!")
       }
    }
 
@@ -184,11 +180,12 @@ const updateBooking = (e) => {
       submitBtn.innerHTML = createLoading()
       bookingService
          .updateBooking(getBookingId(), formData)
-         .then(() => {
-            reloadPage()
+         .then((data) => {
+            toaster.success("Cập nhật đơn đặt bàn thành công!")
+            // reloadPage()
          })
-         .catch(() => {
-            toaster.error("Cập nhật đơn thất bại", "Cập nhật đơn thất bại")
+         .catch((error) => {
+            toaster.error(extractErrorMessage(error))
          })
          .finally(() => {
             submitBtn.innerHTML = backupContent

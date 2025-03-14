@@ -1,14 +1,24 @@
 import express from 'express';
 import session from 'express-session';
 import dotenv from 'dotenv';
+import path from "path"
+import { fileURLToPath } from "url"
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 dotenv.config();
 
 const app = express();
+// Cấu hình view engine EJS
+app.set("view engine", "ejs")
+app.set("views", path.join(__dirname, "views"))
+
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// Chia sẻ thư mục public
+app.use(express.static(path.join(__dirname, "../public")))
 
 // Cấu hình session
 app.use(session({
@@ -17,6 +27,10 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false } // Đổi thành true nếu dùng HTTPS
 }));
+import routes from "./routes_fe/routes.js"
+// Sử dụng Router
+app.use("/", routes)
+
 
 // Import route
 import adminRoutes from './routes/admin.routes.js';
@@ -36,9 +50,6 @@ app.use('/api/reservations', reservationRoutes);
 // Sử dụng route diningTables
 app.use('/api/diningTable', diningTableRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Restaurant Reservation Backend');
-});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

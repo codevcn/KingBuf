@@ -114,13 +114,54 @@ async function getReservationsByUserInfo(data) {
           include: [
             {
               model: DiningTable,
-              as: 'diningTable'
+              as: 'diningTable',
+              attributes: ['TableNumber']
             }
           ]
         }
       ]
     });
-    return reservations;
+
+    // Dùng Map để gom nhóm theo ReservationID
+    const reservationMap = new Map();
+
+    reservations.forEach(reservation => {
+      const reservationID = reservation.ReservationID;
+
+      if (!reservationMap.has(reservationID)) {
+        reservationMap.set(reservationID, {
+          ReservationID: reservation.ReservationID,
+          Cus_FullName: reservation.Cus_FullName,
+          Cus_Phone: reservation.Cus_Phone,
+          ArrivalTime: reservation.ArrivalTime,
+          CreatedAt: reservation.CreatedAt,
+          NumAdults: reservation.NumAdults,
+          NumChildren: reservation.NumChildren,
+          Note: reservation.Note,
+          Status: reservation.Status,
+          TablesList: []
+        });
+      }
+
+      // Lấy object từ Map
+      const existingReservation = reservationMap.get(reservationID);
+
+      // Nếu có reservationTable, lấy danh sách bàn
+      if (reservation.reservationTable) {
+        const tables = Array.isArray(reservation.reservationTable)
+          ? reservation.reservationTable
+          : [reservation.reservationTable]; // Chuyển thành mảng nếu là object
+
+        tables.forEach(rt => {
+          if (rt.diningTable && rt.diningTable.TableNumber) {
+            existingReservation.TablesList.push({ TableNumber: rt.diningTable.TableNumber });
+          }
+        });
+      }
+    });
+
+    // Chuyển Map về mảng kết quả
+    return Array.from(reservationMap.values());
   } catch (error) {
     console.log(error)
     return { errorCode: 500, message: error.message };
@@ -128,7 +169,7 @@ async function getReservationsByUserInfo(data) {
 }
 
 // 3. lấy danh sách tất cả đơn đặt chỗ
-async function getAllReservation({ Status, Cus_Phone, timeRange }) {
+async function getAllReservation({ReservationID, Status, Cus_Phone, timeRange, date }) {
   try {
     // Tạo điều kiện lọc
     const whereCondition = {};
@@ -136,6 +177,10 @@ async function getAllReservation({ Status, Cus_Phone, timeRange }) {
     // Lọc theo Status (nếu có)
     if (Status) {
       whereCondition.Status = Status;
+    }
+    // Lọc theo ReservationID (nếu có)
+    if (ReservationID) {
+      whereCondition.ReservationID = ReservationID;
     }
 
     // Lọc theo Cus_Phone (nếu có)
@@ -157,10 +202,74 @@ async function getAllReservation({ Status, Cus_Phone, timeRange }) {
       };
     }
 
+    if (date) {
+      const startOfDay = dayjs(date).startOf('day').toDate();
+      const endOfDay = dayjs(date).endOf('day').toDate();
 
-    // Truy vấn dữ liệu theo điều kiện lọc
-    const reservations = await Reservation.findAll({ where: whereCondition });
-    return reservations;
+      whereCondition.ArrivalTime = {
+        [Op.between]: [startOfDay, endOfDay]
+      };
+    }
+
+
+    const reservations = await Reservation.findAll({ where: whereCondition,
+      include: [
+        {
+          model: ReservationTable,
+          as: 'reservationTable',
+          include: [
+            {
+              model: DiningTable,
+              as: 'diningTable',
+              attributes: ['TableNumber']
+            }
+          ]
+        }
+      ]
+    });
+
+    // Dùng Map để gom nhóm theo ReservationID
+    const reservationMap = new Map();
+
+    reservations.forEach(reservation => {
+      const reservationID = reservation.ReservationID;
+
+      if (!reservationMap.has(reservationID)) {
+        reservationMap.set(reservationID, {
+          ReservationID: reservation.ReservationID,
+          Cus_FullName: reservation.Cus_FullName,
+          Cus_Phone: reservation.Cus_Phone,
+          ArrivalTime: reservation.ArrivalTime,
+          CreatedAt: reservation.CreatedAt,
+          NumAdults: reservation.NumAdults,
+          NumChildren: reservation.NumChildren,
+          Note: reservation.Note,
+          Status: reservation.Status,
+          reject_reason: reservation.reject_reason,
+          TablesList: []
+        });
+      }
+
+      // Lấy object từ Map
+      const existingReservation = reservationMap.get(reservationID);
+
+      // Nếu có reservationTable, lấy danh sách bàn
+      if (reservation.reservationTable) {
+        const tables = Array.isArray(reservation.reservationTable)
+          ? reservation.reservationTable
+          : [reservation.reservationTable]; // Chuyển thành mảng nếu là object
+
+        tables.forEach(rt => {
+          if (rt.diningTable && rt.diningTable.TableNumber) {
+            existingReservation.TablesList.push({ TableNumber: rt.diningTable.TableNumber });
+          }
+        });
+      }
+    });
+
+    // Chuyển Map về mảng kết quả
+    return Array.from(reservationMap.values());
+
   } catch (error) {
     console.error(error);
     return { errorCode: 500, message: "Lỗi hệ thống, vui lòng thử lại." };
@@ -317,7 +426,7 @@ async function updateReservation(data) {
       return { errorCode: 400, message: `Thiếu thông tin: ${errorText[field]}` };
     }
   }
-
+  //id đơn, số người lớn, số trẻ em, thời gian đến
   try {
     const reservation = await Reservation.findByPk(data.ReservationID);
     if (!reservation) {
@@ -325,6 +434,12 @@ async function updateReservation(data) {
     }
     if (reservation.Status === "Rejected") {
       return { errorCode: 400, message: "Đơn đặt chỗ đã bị từ chối." };
+    }
+    if (reservation.Status === "Cancelled") {
+      return { errorCode: 400, message: "Đơn đặt chỗ đã bị hủy." };
+    }
+    if (reservation.Status === "Completed") {
+      return { errorCode: 400, message: "Đơn đặt chỗ đã hoàn thành." };
     }
 
     let updateData = {};
@@ -402,11 +517,29 @@ async function updateReservation(data) {
       }
 
       if (data.ArrivalTime !== reservation.ArrivalTime) {
+        console.log("tick",data.ArrivalTime,reservation.ArrivalTime)
         updateData.ArrivalTime = data.ArrivalTime;
         hasChanges = true;
       }
     }
+    // Kiểm tra và cập nhật các trường khác
+    if (data.Cus_FullName !== undefined && data.Cus_FullName !== reservation.Cus_FullName) {
+      console.log("tick",data.Cus_FullName)
+      updateData.Cus_FullName = data.Cus_FullName;
+      hasChanges = true;
+    }
 
+    if (data.Note !== undefined && data.Note !== reservation.Note) {
+      console.log("tick",data.Note)
+      updateData.Note = data.Note;
+      hasChanges = true;
+    }
+
+    if (data.Status !== undefined && data.Status !== reservation.Status) {
+      console.log("tick",data.Status)
+      updateData.Status = data.Status;
+      hasChanges = true;
+    }
     // Nếu không có thay đổi, báo không có dữ liệu cần cập nhật
     if (!hasChanges) {
       return { errorCode: 400, message: "Không có dữ liệu nào thay đổi." };

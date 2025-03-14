@@ -110,7 +110,7 @@
                   &.pending {
                      background-color: gs.$primary-color;
                   }
-                  &.approved {
+                  &.approved, &.completed {
                      background-color: gs.$success-color;
                   }
                }

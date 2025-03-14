@@ -5,6 +5,8 @@
    "main": "index.js",
    "type": "module",
    "scripts": {
+      "start": "npm run kill & node ./node_modules/.bin/nodemon ./bin/www",
+    "kill": "kill $(lsof -t -i:3000) | exit 0",
       "dev": "nodemon",
       "test": "echo \"Error: no test specified\" && exit 1"
    },

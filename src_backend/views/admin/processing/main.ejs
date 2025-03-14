@@ -10,7 +10,9 @@
         <% } else if (booking.Status === 'Approved') { %>
         <span class="status approved" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn đã được xử lý">Đã duyệt</span>
         <% } else if (booking.Status === 'Completed') { %>
-        <span class="status completed" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn đã được xử lý">Đã hoàn thành</span>
+        <span class="status arrived" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Khách đã đến">Khách đã đến</span>
+        <% } else if (booking.Status === 'Arrived') { %>
+          <span class="status completed" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn đã được xử lý">Đã hoàn thành</span>
         <% } else if (booking.Status === 'Cancelled') { %>
         <span class="status cancelled" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn đã bị hủy">Đã hủy</span>
         <% } else { %>
@@ -27,17 +29,20 @@
           </div>
           <div class="form-group phone">
             <label for="phone-input">Số điện thoại người đặt</label>
-            <input value="<%= booking.Cus_Phone %>" id="phone-input" name="phone" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <input value="<%= booking.Cus_Phone %>" id="phone-input" name="phone" disabled>
             <div class="message"></div>
           </div>
+          <% const arrivalTime = new Date(booking.ArrivalTime); %>
+          <% const date = arrivalTime.toISOString().slice(0, 10); %>
+          <% const time = arrivalTime.toTimeString().slice(0, 5); %>
           <div class="form-group date">
             <label for="date-input">Ngày đến</label>
-            <input type="date" id="date-input" name="date" value="<%= booking.date %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <input type="date" id="date-input" name="date" value="<%= date %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
             <div class="message"></div>
           </div>
           <div class="form-group time">
             <label for="time-input">Giờ đến</label>
-            <input type="time" id="time-input" name="time" value="<%= booking.time %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+            <input type="time" id="time-input" name="time" value="<%= time %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
             <div class="message"></div>
           </div>
           <div class="form-group note">

@@ -14,8 +14,8 @@ const validateAddTableForm = (formData) => {
       }
    }
 
-   if (!checkIsInteger(formData["table-number"])) {
-      showError("table-number", "Số hiệu bàn phải là 1 số nguyên")
+   if (!formData["table-number"]) {
+      showError("table-number", "Số hiệu bàn không được bỏ trống")
    }
    if (!(checkIsInteger(formData["capacity"]) && parseInt(formData["capacity"]) > 0)) {
       showError("capacity", "Sức chứa của bàn phải lớn hơn hoặc bằng 1")
@@ -41,10 +41,6 @@ const validateUpdateTableForm = (formData) => {
       } else {
          messageEle.hidden = true
       }
-   }
-
-   if (!checkIsInteger(formData["table-number"])) {
-      showError("table-number", "Số hiệu bàn phải là 1 số nguyên")
    }
    if (!(checkIsInteger(formData["capacity"]) && parseInt(formData["capacity"]) > 0)) {
       showError("capacity", "Sức chứa của bàn phải lớn hơn hoặc bằng 1")
@@ -73,7 +69,7 @@ const addNewTable = (e) => {
             reloadPage()
          })
          .catch((error) => {
-            toaster.error(error.message)
+            toaster.error(extractErrorMessage(error))
          })
          .finally(() => {
             submitBtn.innerHTML = backupContent
@@ -96,12 +92,12 @@ const deleteTable = (e) => {
    const backupContent = submitBtn.innerHTML
    submitBtn.innerHTML = createLoading()
    tablesService
-      .deleteTable(e.target.getAttribute("data-kb-table-id"))
+      .deleteTable(e.currentTarget.getAttribute("data-kb-table-id"))
       .then(() => {
          reloadPage()
       })
       .catch((error) => {
-         toaster.error(error.message)
+         toaster.error(extractErrorMessage(error))
       })
       .finally(() => {
          submitBtn.innerHTML = backupContent
@@ -111,6 +107,7 @@ const deleteTable = (e) => {
 const showUpdateTableModal = (e) => {
    const formData = JSON.parse(e.currentTarget.getAttribute("data-kb-table-data"))
 
+   document.getElementById("add-table-table-id-input").value = formData.TableID
    document.getElementById("update-table-table-number-input").value = formData.TableNumber
    document.getElementById("update-table-capacity-input").value = formData.Capacity
    document.getElementById("update-table-location-input").value = formData.Location
@@ -131,13 +128,15 @@ const updateTable = (e) => {
       const submitBtn = document.getElementById("update-table-button")
       const backupContent = submitBtn.innerHTML
       submitBtn.innerHTML = createLoading()
+      console.log(formData)
+      const { 'table-id': tableId, ...updateData } = formData
       tablesService
-         .updateTable(formData)
+         .updateTable(tableId, { Capacity: updateData.capacity, Location: updateData.location, Status: updateData.status })
          .then(() => {
             reloadPage()
          })
          .catch((error) => {
-            toaster.error(error.message)
+            toaster.error(extractErrorMessage(error))
          })
          .finally(() => {
             submitBtn.innerHTML = backupContent
@@ -156,7 +155,7 @@ const init = () => {
       })
    }
 
-   document.getElementById("update-table-form").addEventListener("submit", addNewTable)
+   document.getElementById("update-table-form").addEventListener("submit", updateTable)
    const updatTableFormFields = document.querySelectorAll(
       "#update-table-form .form-groups .form-group input"
    )

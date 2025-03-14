@@ -163,7 +163,7 @@ footer p {
 #main-section .result-section .booking-list .booking-card .card-title .status.pending {
   background-color: #eab308;
 }
-#main-section .result-section .booking-list .booking-card .card-title .status.approved {
+#main-section .result-section .booking-list .booking-card .card-title .status.approved, #main-section .result-section .booking-list .booking-card .card-title .status.completed {
   background-color: #50cd9f;
 }
 #main-section .result-section .booking-list .booking-card .card-info {

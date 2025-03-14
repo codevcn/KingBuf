@@ -48,8 +48,8 @@ const loginAdmin = (e) => {
       showLoginLoading(true)
       authService
          .login(formData)
-         .then(() => {
-            window.location.href = "/bookings-history"
+         .then(() => { 
+            window.location.href = "/admin/all-bookings/"
          })
          .catch((error) => {
             toaster.error(extractErrorMessage(error))

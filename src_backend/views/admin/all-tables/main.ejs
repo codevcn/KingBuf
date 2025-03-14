@@ -1,6 +1,6 @@
 <main id="main-section">
   <section class="title-section">
-    <h3>Tất cả các đơn đặt bàn</h3>
+    <h3>Tất cả các bàn của nhà hàng</h3>
   </section>
 
   <div class="top-actions">
@@ -22,24 +22,31 @@
         </tr>
       </thead>
       <tbody>
-        <% tables.forEach((table) => { %>
-        <tr class="<%= table.Status === 'Maintenance' ? 'maintained' : '' %>">
-          <td><%= table.TableNumber %></td>
-          <td><%= table.Capacity %></td>
-          <td><%= table.Location %></td>
-          <% if (table.Status === 'Maintenance') { %>
-          <td>Đang bảo trì</td>
-          <% } else { %>
-          <td>Còn trống</td>
-          <% } %>
-          <td>
-            <div class="actions">
-              <button class="action delete" data-kb-table-id="<%= table.TableID %>">Xóa bàn</button>
-              <button class="action update" data-kb-table-id="<%= table.TableID %>" data-kb-table-data="<%= JSON.stringify(table) %>">Cập nhật bàn</button>
-            </div>
-          </td>
-        </tr>
-        <% }) %>
+        <% tables.forEach((table)=> { %>
+          <tr class="<%= table.Status === 'Maintenance' ? 'maintained' : '' %>">
+            <td>
+              <%= table.TableNumber %>
+            </td>
+            <td>
+              <%= table.Capacity %>
+            </td>
+            <td>
+              <%= table.Location %>
+            </td>
+            <% if (table.Status==='Maintenance' ) { %>
+              <td>Đang bảo trì</td>
+              <% } else { %>
+                <td>Khả dụng</td>
+                <% } %>
+                  <td>
+                    <div class="actions">
+                      <button class="action delete" data-kb-table-id="<%= table.TableID %>">Xóa bàn</button>
+                      <button class="action update" data-kb-table-id="<%= table.TableID %>"
+                        data-kb-table-data="<%= JSON.stringify(table) %>">Cập nhật bàn</button>
+                    </div>
+                  </td>
+          </tr>
+          <% }) %>
       </tbody>
     </table>
   </div>
@@ -62,12 +69,14 @@
             </div>
             <div class="form-group capacity">
               <label for="add-table-capacity-input">Sức chứa</label>
-              <input id="add-table-capacity-input" name="capacity" min="1" type="number" placeholder="Nhập sức chứa của bàn (số người)">
+              <input id="add-table-capacity-input" name="capacity" min="1" type="number"
+                placeholder="Nhập sức chứa của bàn (số người)">
               <div class="message" hidden></div>
             </div>
             <div class="form-group location">
               <label for="add-table-location-input">Vị trí</label>
-              <input type="text" id="add-table-location-input" name="location" placeholder="Nhập vị trí của bàn, ví dụ: Sảnh VIP">
+              <input type="text" id="add-table-location-input" name="location"
+                placeholder="Nhập vị trí của bàn, ví dụ: Sảnh VIP">
               <div class="message" hidden></div>
             </div>
           </div>
@@ -115,19 +124,22 @@
       <div class="modal-body">
         <form id="update-table-form">
           <div class="form-groups">
+            <input type="text" id="add-table-table-id-input" name="table-id" hidden>
             <div class="form-group table-number">
               <label for="update-table-table-number-input">Số hiệu bàn</label>
-              <input id="update-table-table-number-input" name="table-number" placeholder="Nhập số hiệu bàn, ví dụ: 1">
+              <input id="update-table-table-number-input" name="table-number" disabled placeholder="Nhập số hiệu bàn, ví dụ: 1">
               <div class="message" hidden></div>
             </div>
             <div class="form-group capacity">
               <label for="update-table-capacity-input">Sức chứa</label>
-              <input id="update-table-capacity-input" name="capacity" min="1" type="number" placeholder="Nhập sức chứa của bàn (số người)">
+              <input id="update-table-capacity-input" name="capacity" min="1" type="number"
+                placeholder="Nhập sức chứa của bàn (số người)">
               <div class="message" hidden></div>
             </div>
             <div class="form-group location">
               <label for="update-table-location-input">Vị trí</label>
-              <input type="text" id="update-table-location-input" name="location" placeholder="Nhập vị trí của bàn, ví dụ: Sảnh VIP">
+              <input type="text" id="update-table-location-input" name="location"
+                placeholder="Nhập vị trí của bàn, ví dụ: Sảnh VIP">
               <div class="message" hidden></div>
             </div>
             <div class="form-group status">
@@ -137,8 +149,12 @@
                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                 </button>
                 <ul class="dropdown-menu">
-                  <li><div class="dropdown-item" data-kb-table-status="Available">Còn trống</div></li>
-                  <li><div class="dropdown-item" data-kb-table-status="Maintenance">Bảo trì</div></li>
+                  <li>
+                    <div class="dropdown-item" data-kb-table-status="Available">Còn trống</div>
+                  </li>
+                  <li>
+                    <div class="dropdown-item" data-kb-table-status="Maintenance">Bảo trì</div>
+                  </li>
                 </ul>
               </div>
             </div>
