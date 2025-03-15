@@ -234,7 +234,7 @@ async function delDiningTable(TableID) {
 
 
 // 6. lấy danh sách bàn trống chỗ
-async function getAvailableDiningTables({inputTime, numberOfPeople}) {
+async function getAvailableDiningTables({inputTime, numberOfPeople,ReservationID=-1,Location}) {
   if (!inputTime) {
     return { errorCode: 400, message: "Thiếu thông tin: Thời gian." };
   }
@@ -243,6 +243,9 @@ async function getAvailableDiningTables({inputTime, numberOfPeople}) {
   const tableCondition = { Status: 'Available' };
   if (numberOfPeople !== undefined) {
     tableCondition.Capacity = { [Op.gte]: numberOfPeople };
+  }
+  if (Location !== undefined) {
+    tableCondition.Location = { [Op.eq]: Location }
   }
 
   // Chuyển inputTime thành đối tượng Date
@@ -261,6 +264,9 @@ async function getAvailableDiningTables({inputTime, numberOfPeople}) {
       where: tableCondition,
       include: [{
         model: ReservationTable,
+        where: {
+          ReservationID: { [Op.ne]: ReservationID }
+        },
         as: 'reservationTable',
         required: false,  // sử dụng left join
         include: [{

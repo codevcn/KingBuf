@@ -6,7 +6,9 @@ export const getReservationPage = (req, res, next) => {
       return res.render("reservation/reservation-page", { isAdmin: false })
    }
 }
-import {  getReservationsByUserInfo} from '../services/reservation.service.js';
+import { Op } from "sequelize"
+import DiningTable from "../models/DiningTable.js"
+import { getReservationsByUserInfo } from "../services/reservation.service.js"
 
 export const getBookingsHistoryPage = async (req, res, next) => {
    console.log(req.query)
@@ -24,14 +26,13 @@ export const getBookingsHistoryPage = async (req, res, next) => {
    //       TablesList: [{ TableNumber: 9 }],
    //    }
    // ]
-   const data = await getReservationsByUserInfo(req.query);
-
+   const data = await getReservationsByUserInfo(req.query)
 
    const isAdmin = req.session.admin
    if (isAdmin) {
-      return res.render("bookings-history/bookings-history-page", {  bookings: data, isAdmin: true })
+      return res.render("bookings-history/bookings-history-page", { bookings: data, isAdmin: true })
    } else {
-   res.render("bookings-history/bookings-history-page", { bookings: data, isAdmin: false })
+      res.render("bookings-history/bookings-history-page", { bookings: data, isAdmin: false })
    }
 }
 
@@ -43,11 +44,16 @@ export const getAdminLoginPage = (req, res, next) => {
       return res.render("admin/login/login-page", { isAdmin: false })
    }
 }
-import { getAllReservation } from '../services/reservation.service.js';
+import { getAllReservation } from "../services/reservation.service.js"
 export const getAdminAllBookingsPage = async (req, res, next) => {
    const data = req.query
    console.log(data)
-   let bookings = await getAllReservation({Status : !req.query.status ? null : req.query.status  , Cus_Phone : req.query.phonenumber , timeRange: req.query.expires_in_hours, date: req.query.date });
+   let bookings = await getAllReservation({
+      Status: !req.query.status ? null : req.query.status,
+      Cus_Phone: req.query.phonenumber,
+      timeRange: req.query.expires_in_hours,
+      date: req.query.date,
+   })
    const isAdmin = req.session.admin
    console.log(bookings)
    if (isAdmin) {
@@ -57,20 +63,40 @@ export const getAdminAllBookingsPage = async (req, res, next) => {
    }
 }
 export const getProcessingPage = async (req, res, next) => {
+   const queryStr = req.query
+   //#tick
    const ReservationID = req.params.bookingId
    const [booking] = await getAllReservation({ ReservationID })
    console.log(booking)
-   const tables = await getAvailableDiningTables({inputTime:booking.ArrivalTime}) //peopleCount, arrivalTime, status
+   const tables = await getAvailableDiningTables({
+      inputTime: booking.ArrivalTime,
+      ReservationID,
+      Location: queryStr.location,
+      numberOfPeople:queryStr.capacity
+   }) //peopleCount, arrivalTime, status
+   const fetchedTables = await DiningTable.findAll({
+      attributes: ["Location"],
+      where: {
+         Location: { [Op.ne]: null }, // Loại bỏ giá trị null nếu cần
+      },
+   })
 
+   // Dùng Set để lọc giá trị duy nhất
+   const uniqueLocations = [...new Set(fetchedTables.map((table) => table.Location))]
    const isAdmin = req.session.admin
    if (isAdmin) {
-      return res.render("admin/processing/processing-page", { booking: booking, emptyTables: tables, isAdmin: true })
+      return res.render("admin/processing/processing-page", {
+         booking: booking,
+         emptyTables: tables,
+         isAdmin: true,
+         localtions: uniqueLocations,
+      })
    } else {
       res.redirect("/admin/login")
    }
 }
-import { getDiningTables, getAvailableDiningTables } from '../services/table.service.js';
-export const getAllTablesPage =async (req, res, next) => {
+import { getDiningTables, getAvailableDiningTables } from "../services/table.service.js"
+export const getAllTablesPage = async (req, res, next) => {
    // const tables = [
    //    {
    //       TableID: 1,
@@ -150,7 +176,7 @@ export const getAllTablesPage =async (req, res, next) => {
    //       Status: "Maintenance",
    //    },
    // ]
-   const tables = await getDiningTables({});
+   const tables = await getDiningTables({})
    const isAdmin = req.session.admin
    if (isAdmin) {
       return res.render("admin/all-tables/all-tables-page", { tables, isAdmin: true })

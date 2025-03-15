@@ -24,6 +24,14 @@ const showError = (message, buttonEle) => {
 const getBookingId = () =>
    document.getElementById("update-booking-form").getAttribute("data-kb-booking-id")
 
+const validateReason = (reason) => {
+   if (!reason) {
+      toaster.error("Xử lý đơn thất bại", "Trường lý do không được bỏ trống.")
+      return false
+   }
+   return true
+}
+
 const validateApproving = (pickedTables) => {
    if (!pickedTables || pickedTables.length === 0) {
       toaster.error("Xử lý đơn thất bại", "Chưa có bất cứ bàn nào được chọn cho đơn.")
@@ -39,10 +47,30 @@ const approveBooking = (buttonEle) => {
       processBookingService
          .approveBooking(getBookingId(), pickedTables)
          .then(() => {
+            toaster.success("Cập nhật bàn thành công", "", () => {
+               reloadPage()
+            })
+         })
+         .catch((error) => {
+            toaster.error(extractErrorMessage(error))
+         })
+         .finally(() => {
+            showProcessBookingLoading(false, buttonEle)
+         })
+   }
+}
+
+const cancelBooking = (buttonEle) => {
+   const reason = document.getElementById("cancel-booking-input").value
+   if (validateReason(reason)) {
+      showProcessBookingLoading(true, buttonEle)
+      processBookingService
+         .cancelBooking(getBookingId(), reason)
+         .then(() => {
             reloadPage()
          })
          .catch((error) => {
-            showError(error.message, buttonEle)
+            showError(extractErrorMessage(error), buttonEle)
          })
          .finally(() => {
             showProcessBookingLoading(false, buttonEle)
@@ -55,20 +83,26 @@ const completeProcessBooking = (e) => {
    const type = buttonEle.closest("[data-kb-tab-type]").getAttribute("data-kb-tab-type")
    showError(undefined, buttonEle)
    switch (type) {
+      case "cancel":
+         cancelBooking(buttonEle)
+         break
       case "approve":
          approveBooking(buttonEle)
          break
    }
 }
 
-const openUpdateAssignTables = () => {
+const showUpdateAssignTables = () => {
    const updateAssignTablesEle = document.getElementById("update-assign-tables")
-   const updateAssignTablesBtn = updateAssignTablesEle.querySelector(".open-btn")
-   const tablesList = updateAssignTablesEle.querySelector(".restaurant-tables")
-   const filter = updateAssignTablesEle.querySelector(".filter-tables-form")
-   filter.hidden = !filter.hidden
-   updateAssignTablesBtn.hidden = !updateAssignTablesBtn.hidden
-   tablesList.hidden = !tablesList.hidden
+   const emptyResultSection = updateAssignTablesEle.querySelector(".empty-result")
+   if (emptyResultSection) {
+      emptyResultSection.hidden = !emptyResultSection.hidden
+   } else {
+      const tablesList = updateAssignTablesEle.querySelector(".restaurant-tables")
+      const filter = updateAssignTablesEle.querySelector(".filter-tables-form")
+      filter.hidden = !filter.hidden
+      tablesList.hidden = !tablesList.hidden
+   }
 }
 
 const validateUpdate = (formData) => {
@@ -131,7 +165,9 @@ const updateBooking = (e) => {
       bookingService
          .updateBooking(getBookingId(), formData)
          .then((data) => {
-            toaster.success("Cập nhật đơn đặt bàn thành công!")
+            toaster.success("Cập nhật đơn đặt bàn thành công!", "", () => {
+               reloadPage()
+            })
             // reloadPage()
          })
          .catch((error) => {
@@ -174,13 +210,24 @@ const validateFilterTables = (formData) => {
 
 const filterTables = (e) => {
    e.preventDefault()
-   const formEle = e.currentTarget
-   const formData = extractFormData(formEle)
-   if (validateFilterTables(formData)) {
-      const submitBtn = formEle.querySelector(".submit-btn")
-      submitBtn.innerHTML = createLoading()
-      window.location.href = setURLWithQueryString(getCurrentPath(), formData)
-   }
+   let form = new FormData(e.target)
+
+   let params = new URLSearchParams()
+
+   // Chỉ thêm các field có giá trị vào URL
+   form.forEach((value, key) => {
+      if (value.trim() !== "") {
+         params.append(key, value)
+      }
+   })
+   window.location.href = window.location.pathname + "?" + params.toString()
+   // const formEle = e.currentTarget
+   // const formData = extractFormData(formEle)
+   // if (validateFilterTables(formData)) {
+   //    const submitBtn = formEle.querySelector(".submit-btn")
+   //    submitBtn.innerHTML = createLoading()
+   //    window.location.href = setURLWithQueryString(getCurrentPath(), formData)
+   // }
 }
 
 const updateAssignTables = (e) => {
@@ -192,10 +239,12 @@ const updateAssignTables = (e) => {
       processBookingService
          .approveBooking(getBookingId(), pickedTables)
          .then(() => {
-            reloadPage()
+            toaster.success("Cập nhật bàn thành công", "", () => {
+               reloadPage()
+            })
          })
          .catch((error) => {
-            toaster.error(error.message)
+            toaster.error(extractErrorMessage(error))
          })
          .finally(() => {
             submitBtn.innerHTML = backupContent
@@ -209,11 +258,14 @@ const init = () => {
          ".restaurant-tables table tbody tr .form-check .form-check-input"
       )
       for (const checkbox of approveBookingCheckboxes) {
+         const tableId = checkbox.value
+         if (checkbox.checked) {
+            processBookingShares.pickTable(tableId)
+         }
          checkbox.addEventListener("click", (e) => {
             e.stopPropagation()
          })
          checkbox.addEventListener("change", (e) => {
-            const tableId = checkbox.value
             if (checkbox.checked) {
                processBookingShares.pickTable(tableId)
             } else {
@@ -240,11 +292,10 @@ const init = () => {
    const tablesOfUpdateAssign = document.querySelector("#update-assign-tables")
    tablesOfUpdateAssign
       ?.querySelector(".open-btn")
-      .addEventListener("click", openUpdateAssignTables)
+      ?.addEventListener("click", showUpdateAssignTables)
    tablesOfUpdateAssign
-      ?.querySelector(".escape-btn")
-      .addEventListener("click", openUpdateAssignTables)
-   tablesOfUpdateAssign?.querySelector(".submit-btn").addEventListener("click", updateAssignTables)
+      ?.querySelector(".update-assign-tables-submit-btn")
+      ?.addEventListener("click", updateAssignTables)
 
    const updateBookingForm = document.getElementById("update-booking-form")
    updateBookingForm.addEventListener("submit", updateBooking)
@@ -261,6 +312,44 @@ const init = () => {
       .querySelector("#complete-booking .complete-booking-btn")
       ?.addEventListener("click", completeBooking)
 
-   document.getElementById("filter-tables-form").addEventListener("submit", filterTables)
+   document.getElementById("filter-tables-form")?.addEventListener("submit", filterTables)
+
+   // table status dropdown
+   const dropdownButton = document.querySelector("#filter-location-select .dropdown-toggle")
+   const dropdownItems = document.querySelectorAll("#filter-location-select .dropdown-item")
+   for (const item of dropdownItems) {
+      item.onclick = () => {
+         const selectedText = item.textContent
+         const selectedStatus = item.getAttribute("data-kb-location-status")
+         dropdownButton.textContent = selectedText
+         document.getElementById("filter-location-input").value = selectedStatus
+      }
+   }
 }
 init()
+
+document.addEventListener("DOMContentLoaded", function () {
+   // Lấy tham số từ URL
+   const params = new URLSearchParams(window.location.search)
+
+   // Gán giá trị vào input trạng thái đơn
+   const locationInput = document.querySelector("#filter-location-input")
+   const locationButton = document.querySelector("#filter-location-select button")
+   const selectedLocation = params.get("location")
+
+   if (selectedLocation) {
+      locationInput.value = selectedLocation
+      const selectedItem = document.querySelector(
+         `.dropdown-item[data-kb-location-status="${selectedLocation}"]`
+      )
+      if (selectedItem) {
+         locationButton.textContent = selectedItem.textContent
+      }
+   }
+
+   // Gán giá trị vào input thời gian nếu có
+   const capacityInput = document.querySelector('input[name="capacity"]')
+   if (params.get("capacity")) {
+      capacityInput.value = params.get("capacity")
+   }
+})

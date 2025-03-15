@@ -7,27 +7,39 @@ class ReservationPageShares {
 const reservationPageShares = new ReservationPageShares()
 
 class Toaster {
-   error(title, message) {
+   error(title, message, okHandler) {
       Swal.fire({
          title,
          text: message,
          icon: "error",
+      }).then((result) => {
+         if (result.isConfirmed) {
+            if (okHandler) okHandler()
+         }
       })
    }
 
-   success(title, message) {
+   success(title, message, okHandler) {
       Swal.fire({
          title,
          text: message,
          icon: "success",
+      }).then((result) => {
+         if (result.isConfirmed) {
+            if (okHandler) okHandler()
+         }
       })
    }
 
-   info(title, message) {
+   info(title, message, okHandler) {
       Swal.fire({
          title,
          text: message,
          icon: "info",
+      }).then((result) => {
+         if (result.isConfirmed) {
+            if (okHandler) okHandler()
+         }
       })
    }
 }

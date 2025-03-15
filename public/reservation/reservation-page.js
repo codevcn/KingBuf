@@ -1,15 +1,7 @@
 const bookingFormEle = document.getElementById("booking-form")
 const bookingDetails = document.getElementById("confirm-booking-details")
 
-const formFields = [
-   "full-name",
-   "phone",
-   "date",
-   "time",
-   "adults-count",
-   "children-count",
-   "note",
-]
+const formFields = ["full-name", "phone", "date", "time", "adults-count", "children-count", "note"]
 
 const createFormGroupMessage = (message) => {
    const messageEle = document.createElement("div")
@@ -32,9 +24,7 @@ const validateBooking = (formData) => {
 
    const warning = (formGroupClassName, message) => {
       isValid = false
-      const formGroup = bookingFormEle.querySelector(
-         `.form-group.${formGroupClassName}`
-      )
+      const formGroup = bookingFormEle.querySelector(`.form-group.${formGroupClassName}`)
       formGroup.classList.add("warning")
       formGroup.querySelector(".message")?.remove()
       formGroup.appendChild(createFormGroupMessage(message))
@@ -63,8 +53,8 @@ const validateBooking = (formData) => {
       warning("adults-count", "Phải có ít nhất 1 người lớn!")
    }
    if (childrenCount) {
-      if (!validator.isInt(childrenCount, { min: 1 })) {
-         warning("children-count", "Số trẻ em phải lớn hơn 0!")
+      if (!validator.isInt(childrenCount, { min: 0 })) {
+         warning("children-count", "Số trẻ em phải lớn hơn hoặc bằng 0!")
       }
    }
 
@@ -72,17 +62,11 @@ const validateBooking = (formData) => {
 }
 
 const showConfirmBooking = (formData) => {
-   bookingDetails.querySelector(".form-group.full-name p").textContent =
-      formData["full-name"]
-   bookingDetails.querySelector(".form-group.phone p").textContent =
-      formData["phone"]
-   bookingDetails.querySelector(".form-group.date-time p").textContent = `${
-      formData["date"]
-   }, ${formData["time"]} (${
-      convertTo12HourFormat(formData["time"])[1] === "AM"
-         ? "Buổi sáng"
-         : "Buổi chiều"
-   })`
+   bookingDetails.querySelector(".form-group.full-name p").textContent = formData["full-name"]
+   bookingDetails.querySelector(".form-group.phone p").textContent = formData["phone"]
+   bookingDetails.querySelector(".form-group.date-time p").textContent = `${formData["date"]}, ${
+      formData["time"]
+   } (${convertTo12HourFormat(formData["time"])[1] === "AM" ? "Buổi sáng" : "Buổi chiều"})`
    bookingDetails.querySelector(".form-group.people-count p").textContent = `${
       formData["adults-count"]
    } người lớn và ${formData["children-count"] || 0} trẻ em`
@@ -119,14 +103,12 @@ const confirmBooking = () => {
    bookingService
       .submitBooking(reservationPageShares.bookingData)
       .then(() => {
-         console.log("tick",)
-         window.location.href = `/bookings-history?Cus_FullName=${reservationPageShares.bookingData["full-name"]}&Cus_Phone=${reservationPageShares.bookingData["phone"]}`
+         toaster.success("Đặt bàn thành công", "", () => {
+            window.location.href = `/bookings-history?Cus_FullName=${reservationPageShares.bookingData["full-name"]}&Cus_Phone=${reservationPageShares.bookingData["phone"]}`
+         })
       })
       .catch((error) => {
-         toaster.error(
-            "Đặt chỗ thất bại",
-            extractErrorMessage(error),
-         )
+         toaster.error("Đặt chỗ thất bại", extractErrorMessage(error))
       })
       .finally(() => {
          showCofirmBookingLoading(false)
@@ -143,9 +125,6 @@ const init = () => {
       })
    }
 
-   bookingDetails
-      .querySelector(".submit-btn")
-      .addEventListener("click", confirmBooking)
+   bookingDetails.querySelector(".submit-btn").addEventListener("click", confirmBooking)
 }
 init()
-

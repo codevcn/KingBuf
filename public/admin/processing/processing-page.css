@@ -241,7 +241,7 @@ footer p {
   background: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin: 15px 0 20px;
+  margin: 10px 0 20px;
 }
 #filter-tables-form .filter-tables-title {
   font-size: 1.3rem;
@@ -277,6 +277,36 @@ footer p {
   margin: 0;
   outline: none;
   border: none;
+}
+#filter-tables-form .form-groups .form-group .dropdown-toggle {
+  background-color: white;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 1px gray;
+  margin: 0;
+  outline: none;
+  border: none;
+  line-height: 1.1;
+}
+#filter-tables-form .form-groups .form-group .dropdown {
+  flex-grow: 1;
+}
+#filter-tables-form .form-groups .form-group .dropdown .dropdown-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: black;
+  width: 100%;
+  height: 100%;
+}
+#filter-tables-form .form-groups .form-group .dropdown .dropdown-toggle::after {
+  color: gray;
+}
+#filter-tables-form .form-groups .form-group .dropdown .dropdown-menu .dropdown-item {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  cursor: pointer;
 }
 #filter-tables-form .form-groups .form-group.status input,
 #filter-tables-form .form-groups .form-group.status p,
@@ -516,22 +546,14 @@ footer p {
 #update-assign-tables {
   margin-top: 20px;
 }
-#update-assign-tables .open-btn {
+#update-assign-tables .update-assign-tables-title {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: white;
-  padding: 5px 15px;
-  border-radius: 4px;
-  background-color: #1f2937;
-  font-weight: bold;
-  font-size: 1rem;
-  border: 2px #1f2937 solid;
-  margin-bottom: 15px;
-}
-#update-assign-tables .open-btn:hover {
-  background-color: white;
   color: #1f2937;
+  padding: 5px 15px;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 #update-assign-tables .confirm-assign-tables {
   display: flex;
@@ -556,7 +578,7 @@ footer p {
 #update-assign-tables .confirm-assign-tables .escape-btn:hover .spinner-border {
   color: #ca8a04;
 }
-#update-assign-tables .confirm-assign-tables .submit-btn {
+#update-assign-tables .confirm-assign-tables .update-assign-tables-submit-btn {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -567,22 +589,40 @@ footer p {
   border: 2px #eab308 solid;
   background-color: #eab308;
 }
-#update-assign-tables .confirm-assign-tables .submit-btn i {
+#update-assign-tables .confirm-assign-tables .update-assign-tables-submit-btn i {
   font-size: 1.2rem;
 }
-#update-assign-tables .confirm-assign-tables .submit-btn:hover {
+#update-assign-tables .confirm-assign-tables .update-assign-tables-submit-btn:hover {
   color: black;
   background-color: white;
 }
-#update-assign-tables .confirm-assign-tables .submit-btn:hover .spinner-border {
+#update-assign-tables .confirm-assign-tables .update-assign-tables-submit-btn:hover .spinner-border {
   color: #ca8a04;
 }
-#update-assign-tables .confirm-assign-tables .submit-btn .spinner-border {
+#update-assign-tables .confirm-assign-tables .update-assign-tables-submit-btn .spinner-border {
   display: flex;
   height: 19.2px;
   width: 19.2px;
   color: white;
   margin: 0 auto;
+}
+#update-assign-tables .empty-result {
+  display: flex;
+  width: 100%;
+  padding: 50px;
+}
+#update-assign-tables .empty-result .empty-content {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  align-items: center;
+  margin: auto;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: gray;
+}
+#update-assign-tables .empty-result .empty-content i {
+  font-size: 3rem;
 }
 
 #approve-booking .approve-booking-title {

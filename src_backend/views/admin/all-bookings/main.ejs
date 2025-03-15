@@ -137,7 +137,7 @@
           </button>
           <% } if (Status === 'Approved') { %>
           <button type="button" class="action-btn" id="cancel-booking-btn" data-kb-booking-data="<%= JSON.stringify({ReservationID,Cus_FullName,Cus_Phone,ArrivalTime,NumAdults,NumChildren,Note,Status,CreatedAt,TablesList,reject_reason}) %>" onclick="showConfirmCancelBookingModal(event)">
-            <i class="bi bi-person-fill-check"></i>
+            <i class="bi bi-trash"></i>
             <span>Hủy đơn</span>
           </button>
           <% } %>
@@ -276,7 +276,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Hủy đơn</h4>
+        <h4 class="modal-title">Hoàn thành đơn</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">

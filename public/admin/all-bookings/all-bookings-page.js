@@ -17,20 +17,19 @@ const validateFilterFormData = (formData) => {
 }
 
 const filterBookings = (e) => {
-   e.preventDefault(); // Ngăn form gửi trực tiếp
+   e.preventDefault() // Ngăn form gửi trực tiếp
 
-   let form = new FormData(e.target);
+   let form = new FormData(e.target)
 
-    let params = new URLSearchParams();
+   let params = new URLSearchParams()
 
-    // Chỉ thêm các field có giá trị vào URL
-    form.forEach((value, key) => {
-        if (value.trim() !== "" && value.trim() !== "none" && value.trim() !== "All") {
-            params.append(key, value);
-        }
-    });
-    window.location.href = e.target.action + "?" + params.toString();
-
+   // Chỉ thêm các field có giá trị vào URL
+   form.forEach((value, key) => {
+      if (value.trim() !== "" && value.trim() !== "none" && value.trim() !== "All") {
+         params.append(key, value)
+      }
+   })
+   window.location.href = window.location.pathname + "?" + params.toString()
 }
 
 const getBookingId = (submitBtn) =>
@@ -44,14 +43,15 @@ const completeBooking = (e) => {
    processBookingService
       .completeBooking(getBookingIdFromBtn(submitBtn))
       .then(() => {
-         toaster.success("Hoàn thành đơn thành công.")
+         toaster.success("Hoàn thành đơn thành công.", "", () => {
+            reloadPage()
+         })
       })
       .catch((error) => {
          toaster.error(extractErrorMessage(error))
       })
       .finally(() => {
          submitBtn.innerHTML = backupContent
-         window.location.reload()
       })
 }
 
@@ -63,34 +63,34 @@ const arrivedCustomer = (e) => {
    processBookingService
       .arrivedCustomer(getBookingIdFromBtn(submitBtn))
       .then(() => {
-         // window.location.reload()
-         toaster.success("Khách đã đến thành công.");
+         toaster.success("Khách đã đến thành công.", "", () => {
+            reloadPage()
+         })
       })
       .catch((error) => {
          toaster.error(extractErrorMessage(error))
       })
       .finally(() => {
          submitBtn.innerHTML = backupContent
-         window.location.reload()
       })
 }
 
-const setArrivedStatus = (e) => {
-   const submitBtn = e.currentTarget
-   const backupContent = e.target.innerHTML
-   submitBtn.innerHTML = createLoading()
-   bookingService
-      .updateBooking(getBookingId(submitBtn), { Reason: "Khách không đến" })
-      .then(() => {
-         reloadPage()
-      })
-      .catch((error) => {
-         toaster.error(error.message)
-      })
-      .finally(() => {
-         submitBtn.innerHTML = backupContent
-      })
-}
+// const setArrivedStatus = (e) => {
+//    const submitBtn = e.currentTarget
+//    const backupContent = e.target.innerHTML
+//    submitBtn.innerHTML = createLoading()
+//    bookingService
+//       .updateBooking(getBookingId(submitBtn), { Reason: "Khách không đến" })
+//       .then(() => {
+//          reloadPage()
+//       })
+//       .catch((error) => {
+//          toaster.error(error.message)
+//       })
+//       .finally(() => {
+//          submitBtn.innerHTML = backupContent
+//       })
+// }
 
 const showConfirmCancelBookingModal = (e) => {
    const bookingData = JSON.parse(e.currentTarget.getAttribute("data-kb-booking-data"))
@@ -196,14 +196,15 @@ const rejectBooking = (e) => {
       processBookingService
          .rejectBooking(getBookingIdFromBtn(submitBtn), reason)
          .then(() => {
-            toaster.success("Từ chối đơn thành công.")
+            toaster.success("Từ chối đơn thành công.", "", () => {
+               reloadPage()
+            })
          })
          .catch((error) => {
             toaster.error(extractErrorMessage(error))
          })
          .finally(() => {
             submitBtn.innerHTML = backupContent
-            window.location.reload()
          })
    }
 }
@@ -216,14 +217,15 @@ const cancelBooking = (e) => {
    processBookingService
       .cancelBooking(getBookingIdFromBtn(submitBtn))
       .then(() => {
-         toaster.success("Hủy đơn thành công.")
+         toaster.success("Hủy đơn thành công.", "", () => {
+            reloadPage()
+         })
       })
       .catch((error) => {
          toaster.error(extractErrorMessage(error))
       })
       .finally(() => {
          submitBtn.innerHTML = backupContent
-         window.location.reload()
       })
 }
 

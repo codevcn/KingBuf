@@ -220,7 +220,7 @@ $tab-darker-border: #dedede;
    background: #f9f9f9;
    border-radius: 8px;
    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-   margin: 15px 0 20px;
+   margin: 10px 0 20px;
 
    .filter-tables-title {
       font-size: 1.3rem;
@@ -258,6 +258,43 @@ $tab-darker-border: #dedede;
             margin: 0;
             outline: none;
             border: none;
+         }
+
+         .dropdown-toggle {
+            background-color: white;
+            padding: 8px;
+            border-radius: 4px;
+            box-shadow: 0 0 1px gray;
+            margin: 0;
+            outline: none;
+            border: none;
+            line-height: 1.1;
+         }
+
+         .dropdown {
+            flex-grow: 1;
+
+            .dropdown-toggle {
+               display: flex;
+               justify-content: space-between;
+               align-items: center;
+               gap: 10px;
+               color: black;
+               width: 100%;
+               height: 100%;
+
+               &::after {
+                  color: gray;
+               }
+            }
+
+            .dropdown-menu {
+               .dropdown-item {
+                  padding-top: 8px;
+                  padding-bottom: 8px;
+                  cursor: pointer;
+               }
+            }
          }
 
          &.status {
@@ -544,23 +581,14 @@ $tab-darker-border: #dedede;
 #update-assign-tables {
    margin-top: 20px;
 
-   .open-btn {
+   .update-assign-tables-title {
       display: flex;
       align-items: center;
       gap: 6px;
-      color: white;
+      color: gs.$dark-bg;
       padding: 5px 15px;
-      border-radius: 4px;
-      background-color: gs.$dark-bg;
       font-weight: bold;
-      font-size: 1rem;
-      border: 2px gs.$dark-bg solid;
-      margin-bottom: 15px;
-
-      &:hover {
-         background-color: white;
-         color: gs.$dark-bg;
-      }
+      font-size: 1.1rem;
    }
 
    .confirm-assign-tables {
@@ -589,7 +617,7 @@ $tab-darker-border: #dedede;
          }
       }
 
-      .submit-btn {
+      .update-assign-tables-submit-btn {
          display: flex;
          align-items: center;
          gap: 5px;
@@ -619,6 +647,27 @@ $tab-darker-border: #dedede;
             width: 19.2px;
             color: white;
             margin: 0 auto;
+         }
+      }
+   }
+
+   .empty-result {
+      display: flex;
+      width: 100%;
+      padding: 50px;
+
+      .empty-content {
+         display: flex;
+         flex-direction: column;
+         row-gap: 20px;
+         align-items: center;
+         margin: auto;
+         font-size: 1.1rem;
+         font-weight: 500;
+         color: gray;
+
+         i {
+            font-size: 3rem;
          }
       }
    }
