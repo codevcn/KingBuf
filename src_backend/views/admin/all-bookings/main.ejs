@@ -41,8 +41,8 @@
       </div>
 
       <div class="form-group time">
-        <label for="filter-bookings-time-input">Thời gian đến hạn</label>
-        <input type="number" id="filter-bookings-time-input" name="time">
+        <label for="filter-bookings-time-input">Số giờ đến hạn</label>
+        <input type="number" id="filter-bookings-time-input" name="expires_in_hours">
         <div class="message"></div>
       </div>
 
@@ -102,11 +102,16 @@
           <p><strong>Ghi chú:</strong> <%= Note || "Không có" %></p>
           <p><strong>Ngày tạo đơn:</strong> <%= CreatedAt %></p>
         </div>
-        <% if (reject_reason) { %>
+        <% if ( Status === 'Rejected') { %>
         <div class="reject-reason">
-          <strong>Lý do từ chối:</strong> <%= reject_reason %>
+          <strong>Lý do từ chối:</strong>
+          <% if ( reject_reason ) { %>
+          <%= reject_reason %>
+          <% } else { %>
+            Không có lý lo
+          <% } %>
         </div>
-        <% } else if (TablesList && TablesList.length > 0) { %>
+        <% } else if (Status === 'Approved' && TablesList && TablesList.length > 0) { %>
         <div class="tables-list">
           <span>Danh sách bàn:</span>
           <% TablesList.forEach(({TableNumber},index) => {%>
@@ -126,7 +131,7 @@
             <span>Hoàn thành đơn</span>
           </button>
           <% } if (Status === 'Approved') { %>
-          <button type="button" class="action-btn" id="set-arrived-cus-btn">
+          <button type="button" class="action-btn" id="set-arrived-cus-btn" data-kb-booking-data="<%= JSON.stringify({ReservationID,Cus_FullName,Cus_Phone,ArrivalTime,NumAdults,NumChildren,Note,Status,CreatedAt,TablesList,reject_reason}) %>" onclick="showConfirmArrivedCusModal(event)">
             <i class="bi bi-person-fill-check"></i>
             <span>Khách đã đến</span>
           </button>
@@ -310,6 +315,58 @@
             <button class="submit-btn complete-btn" onclick="completeBooking(event)">
               <i class="bi bi-trash"></i>
               <span>Xác nhận hoàn thành đơn</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="arrived-cus-modal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Khách hàng đã đến</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <h3 class="booking-details-title">Thông tin đặt chỗ</h3>
+        <section class="booking-details">
+          <div class="form-groups">
+            <div class="form-group full-name">
+              <label>Họ và tên người đặt</label>
+              <p></p>
+            </div>
+            <div class="form-group phone">
+              <label>Số điện thoại người đặt</label>
+              <p></p>
+            </div>
+            <div class="form-group date-time">
+              <label>Thời gian đến</label>
+              <p></p>
+            </div>
+            <div class="form-group people-count">
+              <label>Số người lớn và trẻ em</label>
+              <p></p>
+            </div>
+            <div class="form-group note">
+              <label>Ghi chú cho nhà hàng</label>
+              <p></p>
+            </div>
+            <div class="form-group created-at">
+              <label>Thời gian tạo đơn</label>
+              <p></p>
+            </div>
+          </div>
+        </section>
+
+        <form class="complete-form" id="confirm-complete-form">
+          <div class="btns">
+            <button class="submit-btn complete-btn" onclick="arrivedCustomer(event)">
+              <i class="bi bi-trash"></i>
+              <span>Xác nhận khách đã đến</span>
             </button>
           </div>
         </form>

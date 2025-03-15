@@ -264,42 +264,29 @@
       <div class="tab-content">
         <div class="tab-pane fade show active" id="approve-tab-pane" role="tabpanel" tabindex="0" data-kb-tab-type="approve">
           <section id="approve-booking">
-            <label class="approve-booking-title">Danh sách bàn còn trống của nhà hàng</label>
+            <label class="approve-booking-title">Danh sách bàn còn trống</label>
 
             <% if (emptyTables && emptyTables.length > 0) { %>
             <form id="filter-tables-form">
-              <h2 class="filter-tables-title">Bộ lọc bàn</h2>
 
               <div class="form-groups">
                 <div class="form-group date">
                   <label for="filter-tables-date-input">Ngày phục vụ</label>
-                  <input type="date" id="filter-tables-date-input" name="date" value="<%= booking.date %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+                  <input type="date" id="filter-tables-date-input" name="date" value="<%= date %>"  disabled>
                   <div class="message"></div>
                 </div>
                 <div class="form-group time">
                   <label for="filter-tables-time-input">Giờ phục vụ</label>
-                  <input type="time" id="filter-tables-time-input" name="time" value="<%= booking.time %>" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
+                  <input type="time" id="filter-tables-time-input" name="time" value="<%= time %>" disabled>
                   <div class="message"></div>
                 </div>
-                <div class="form-group people-count">
-                  <label for="filter-tables-people-count-input">Số người phục vụ</label>
-                  <input type="number" value="<%= booking.NumAdults + booking.NumChildren %>" id="filter-tables-people-count-input" name="people-count" <%= booking.Status === 'Completed' ? 'disabled' : '' %>>
-                  <div class="message"></div>
-                </div>
-              </div>
-
-              <div class="btns">
-                <button class="submit-btn">
-                  <i class="bi bi-check-lg"></i>
-                  <span>Áp dụng bộ lọc</span>
-                </button>
               </div>
             </form>
 
             <section class="summary">
               <p>
                 <i class="bi bi-card-text"></i>
-                <span>Tổng cộng: <%= emptyTables?.length || 0 %> bàn còn trống.</span>
+                <span>Tổng cộng: <%= emptyTables?.length || 0 %> bàn còn trống trong vòng 12 giờ.</span>
               </p>
             </section>
 
@@ -323,7 +310,7 @@
                     <% if (Status === 'Maintenance') { %>
                     <td>Đang bảo trì</td>
                     <% } else { %>
-                    <td>Còn trống</td>
+                    <td>Khả dụng</td>
                     <% } %>
                     <% if (Status !== 'Maintenance') { %>
                     <td>
@@ -343,7 +330,7 @@
             <div class="empty-result">
               <p class="empty-content">
                 <i class="bi bi-exclamation-circle"></i>
-                <span>Không có bàn trống.</span>
+                <span>Không có bàn trống trong vòng 12 giờ.</span>
               </p>
             </div>
             <% } %>
@@ -356,7 +343,7 @@
             </div>
             <p class="result-message"></p>
           </section>
-
+          <% if (emptyTables && emptyTables.length > 0) { %>
           <div class="complete-processing">
             <span></span>
             <button class="submit-btn">
@@ -364,6 +351,7 @@
               <span>Hoàn tất xử lý đơn</span>
             </button>
           </div>
+          <% } %>
         </div>
       </div>
     </section>

@@ -397,6 +397,10 @@ async function assignReservationToTable(reservationID, tableIDList, adminID) {
 
       // Gán bàn cho đơn đặt
       await ReservationTable.create({ ReservationID: reservationID, TableID: tableID, AdminID: adminID }, { transaction });
+      const result = await Reservation.update(
+          { Status: 'Approved' }, // Giá trị cần cập nhật
+          { where: { ReservationID: reservationID }, transaction } // Điều kiện
+      );
     }
 
     if (unavailableTables.length > 0) {

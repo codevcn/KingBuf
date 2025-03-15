@@ -234,7 +234,7 @@ async function delDiningTable(TableID) {
 
 
 // 6. lấy danh sách bàn trống chỗ
-async function getAvailableDiningTables(inputTime, numberOfPeople) {
+async function getAvailableDiningTables({inputTime, numberOfPeople}) {
   if (!inputTime) {
     return { errorCode: 400, message: "Thiếu thông tin: Thời gian." };
   }

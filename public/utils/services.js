@@ -28,36 +28,33 @@ const bookingService = new BookingService()
 
 class ProcessBookingService {
    async approveBooking(bookingId, tableIds) {
-      await new Promise((resolve, reject) => {
-         setTimeout(() => {
-            reject(new Error("something went vcn error!!"))
-            // resolve(true)
-         }, 1000)
+      const tableIDList = tableIds.map(x => parseInt(x));
+      await clientAxios.post(`/api/reservations/assign`, {
+         reservationID: bookingId,
+         tableIDList:tableIDList
       })
-   }
+   } 
 
    async rejectBooking(bookingId, reason) {
-      await new Promise((resolve, reject) => {
-         setTimeout(() => {
-            reject(new Error("something went vcn error!!"))
-         }, 1000)
+      await clientAxios.post(`/api/reservations/rejectReservation/${bookingId}`, {
+         reject_reason: reason
       })
    }
 
-   async cancelBooking(bookingId, reason) {
-      await new Promise((resolve, reject) => {
-         setTimeout(() => {
-            reject(new Error("something went vcn error!!"))
-            // resolve(true)
-         }, 1000)
+   async cancelBooking(bookingId) {
+      await clientAxios.put(`/api/reservations/update/${bookingId}`, {
+         Status: "Cancelled"
       })
    }
 
    async completeBooking(bookingId) {
-      await new Promise((resolve, reject) => {
-         setTimeout(() => {
-            reject(new Error("something went vcn error!!"))
-         }, 1000)
+      await clientAxios.put(`/api/reservations/update/${bookingId}`, {
+         Status: "Completed"
+      })
+   }
+   async arrivedCustomer(bookingId) {
+      await clientAxios.put(`/api/reservations/update/${bookingId}`, {
+         Status: "Arrived"
       })
    }
 }

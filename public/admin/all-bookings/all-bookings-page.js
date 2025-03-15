@@ -1,7 +1,7 @@
 const validateFilterFormData = (formData) => {
    let isValid = true
 
-   const time = formData["time"],
+   const time = formData["expires_in_hours"],
       status = formData["status"]
 
    if (!time) {
@@ -17,12 +17,20 @@ const validateFilterFormData = (formData) => {
 }
 
 const filterBookings = (e) => {
-   // e.preventDefault()
-   // console.log("filterBookings")
-   // const formData = extractFormData(e.target)
-   // if (validateFilterFormData(formData)) {
-   //    navigateWithPayload(getCurrentPath(), formData)
-   // }
+   e.preventDefault(); // Ngăn form gửi trực tiếp
+
+   let form = new FormData(e.target);
+
+    let params = new URLSearchParams();
+
+    // Chỉ thêm các field có giá trị vào URL
+    form.forEach((value, key) => {
+        if (value.trim() !== "" && value.trim() !== "none" && value.trim() !== "All") {
+            params.append(key, value);
+        }
+    });
+    window.location.href = e.target.action + "?" + params.toString();
+
 }
 
 const getBookingId = (submitBtn) =>
@@ -36,13 +44,34 @@ const completeBooking = (e) => {
    processBookingService
       .completeBooking(getBookingIdFromBtn(submitBtn))
       .then(() => {
-         toaster.success("ABC")
+         toaster.success("Hoàn thành đơn thành công.")
       })
       .catch((error) => {
          toaster.error(extractErrorMessage(error))
       })
       .finally(() => {
          submitBtn.innerHTML = backupContent
+         window.location.reload()
+      })
+}
+
+const arrivedCustomer = (e) => {
+   e.preventDefault()
+   const submitBtn = e.currentTarget
+   const backupContent = e.target.innerHTML
+   submitBtn.innerHTML = createLoading()
+   processBookingService
+      .arrivedCustomer(getBookingIdFromBtn(submitBtn))
+      .then(() => {
+         // window.location.reload()
+         toaster.success("Khách đã đến thành công.");
+      })
+      .catch((error) => {
+         toaster.error(extractErrorMessage(error))
+      })
+      .finally(() => {
+         submitBtn.innerHTML = backupContent
+         window.location.reload()
       })
 }
 
@@ -81,6 +110,27 @@ const showConfirmCancelBookingModal = (e) => {
    formGroups.querySelector(".created-at p").textContent = bookingData.CreatedAt
 
    const confirmBooking = new bootstrap.Modal("#cancel-booking-modal")
+   confirmBooking.show()
+}
+
+const showConfirmArrivedCusModal = (e) => {
+   const bookingData = JSON.parse(e.currentTarget.getAttribute("data-kb-booking-data"))
+   const confirmSection = document.getElementById("arrived-cus-modal")
+   confirmSection
+      .querySelector(".submit-btn")
+      .setAttribute("data-kb-booking-id", bookingData.ReservationID)
+   const formGroups = document.querySelector(
+      "#arrived-cus-modal .modal-body .booking-details .form-groups"
+   )
+   formGroups.querySelector(".full-name p").textContent = bookingData.Cus_FullName
+   formGroups.querySelector(".phone p").textContent = bookingData.Cus_Phone
+   formGroups.querySelector(".date-time p").textContent = bookingData.ArrivalTime
+   formGroups.querySelector(".people-count p").textContent =
+      bookingData.NumAdults + bookingData.NumChildren
+   formGroups.querySelector(".note p").textContent = bookingData.Note || "Không có"
+   formGroups.querySelector(".created-at p").textContent = bookingData.CreatedAt
+
+   const confirmBooking = new bootstrap.Modal("#arrived-cus-modal")
    confirmBooking.show()
 }
 
@@ -146,13 +196,14 @@ const rejectBooking = (e) => {
       processBookingService
          .rejectBooking(getBookingIdFromBtn(submitBtn), reason)
          .then(() => {
-            toaster.success("ABC")
+            toaster.success("Từ chối đơn thành công.")
          })
          .catch((error) => {
             toaster.error(extractErrorMessage(error))
          })
          .finally(() => {
             submitBtn.innerHTML = backupContent
+            window.location.reload()
          })
    }
 }
@@ -163,15 +214,16 @@ const cancelBooking = (e) => {
    const backupContent = e.target.innerHTML
    submitBtn.innerHTML = createLoading()
    processBookingService
-      .cancelBooking(getBookingIdFromBtn(submitBtn), "Khách không đến")
+      .cancelBooking(getBookingIdFromBtn(submitBtn))
       .then(() => {
-         toaster.success("ABC")
+         toaster.success("Hủy đơn thành công.")
       })
       .catch((error) => {
          toaster.error(extractErrorMessage(error))
       })
       .finally(() => {
          submitBtn.innerHTML = backupContent
+         window.location.reload()
       })
 }
 
@@ -188,7 +240,7 @@ const init = () => {
       }
    }
 
-   // document.getElementById("filter-bookings-form").addEventListener("submit", filterBookings)
+   document.getElementById("filter-bookings-form").addEventListener("submit", filterBookings)
    // document.getElementById("complete-booking-btn").addEventListener("click", completeBooking)
    // document.getElementById("set-arrived-cus-btn").addEventListener("click", setArrivedStatus)
    // document.getElementById("cancel-booking-btn").addEventListener("click", cancelBooking)
@@ -214,9 +266,9 @@ document.addEventListener("DOMContentLoaded", function () {
    }
 
    // Gán giá trị vào input thời gian nếu có
-   const timeInput = document.querySelector('input[name="time"]')
-   if (params.get("time")) {
-      timeInput.value = params.get("time")
+   const timeInput = document.querySelector('input[name="expires_in_hours"]')
+   if (params.get("expires_in_hours")) {
+      timeInput.value = params.get("expires_in_hours")
    }
 
    // Gán giá trị vào input ngày nếu có

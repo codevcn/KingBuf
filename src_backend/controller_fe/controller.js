@@ -47,7 +47,7 @@ import { getAllReservation } from '../services/reservation.service.js';
 export const getAdminAllBookingsPage = async (req, res, next) => {
    const data = req.query
    console.log(data)
-   let bookings = await getAllReservation({Status : !req.query.status || req.query.status === 'All' ? null : req.query.status  , Cus_Phone : req.query.phonenumber , timeRange: req.query.time, date: req.query.date });
+   let bookings = await getAllReservation({Status : !req.query.status ? null : req.query.status  , Cus_Phone : req.query.phonenumber , timeRange: req.query.expires_in_hours, date: req.query.date });
    const isAdmin = req.session.admin
    console.log(bookings)
    if (isAdmin) {
@@ -56,98 +56,20 @@ export const getAdminAllBookingsPage = async (req, res, next) => {
       res.redirect("/admin/login")
    }
 }
-
 export const getProcessingPage = async (req, res, next) => {
    const ReservationID = req.params.bookingId
    const [booking] = await getAllReservation({ ReservationID })
    console.log(booking)
-   const emptyTables = [
-      {
-         TableID: 1,
-         TableNumber: 1,
-         Capacity: 2,
-         Location: "Sảnh chính",
-         Status: "Maintenance",
-      },
-      {
-         TableID: 2,
-         TableNumber: 2,
-         Capacity: 4,
-         Location: "Sảnh 1",
-         Status: "Available",
-      },
-      {
-         TableID: 3,
-         TableNumber: 3,
-         Capacity: 6,
-         Location: "Sảnh 3",
-         Status: "Available",
-      },
-      {
-         TableID: 4,
-         TableNumber: 4,
-         Capacity: 2,
-         Location: "Ban công",
-         Status: "Available",
-      },
-      {
-         TableID: 5,
-         TableNumber: 5,
-         Capacity: 8,
-         Location: "Sân thượng",
-         Status: "Reserved",
-      },
-      {
-         TableID: 6,
-         TableNumber: 6,
-         Capacity: 4,
-         Location: "Sảnh 2",
-         Status: "Available",
-      },
-      {
-         TableID: 7,
-         TableNumber: 7,
-         Capacity: 10,
-         Location: "Sảnh chính",
-         Status: "Available",
-      },
-      {
-         TableID: 8,
-         TableNumber: 8,
-         Capacity: 2,
-         Location: "Khu sân vườn",
-         Status: "Available",
-      },
-      {
-         TableID: 9,
-         TableNumber: 9,
-         Capacity: 6,
-         Location: "Sảnh 1",
-         Status: "Maintenance",
-      },
-      {
-         TableID: 10,
-         TableNumber: 10,
-         Capacity: 4,
-         Location: "Tầng thượng",
-         Status: "Available",
-      },
-      {
-         TableID: 11,
-         TableNumber: 11,
-         Capacity: 12,
-         Location: "Sảnh VIP",
-         Status: "Maintenance",
-      },
-   ]
+   const tables = await getAvailableDiningTables({inputTime:booking.ArrivalTime}) //peopleCount, arrivalTime, status
+
    const isAdmin = req.session.admin
    if (isAdmin) {
-      return res.render("admin/processing/processing-page", { booking: booking, emptyTables, isAdmin: true })
+      return res.render("admin/processing/processing-page", { booking: booking, emptyTables: tables, isAdmin: true })
    } else {
       res.redirect("/admin/login")
    }
 }
-import { getDiningTables } from '../services/table.service.js';
+import { getDiningTables, getAvailableDiningTables } from '../services/table.service.js';
 export const getAllTablesPage =async (req, res, next) => {
    // const tables = [
    //    {

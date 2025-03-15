@@ -86,9 +86,7 @@ async function rejectReservationCtrl(req,res) {
 async function assignReservationToTableCtrl(req, res) {
   // Lấy reservationID và tableID từ req.body
   let { reservationID, tableIDList } = req.body;
-  const arr = JSON.parse(tableIDList);
-  console.log(arr);
-  tableIDList = arr;
+  console.log(req.body);
   const adminID = req.session.admin.id;
   
   if (!reservationID || !tableIDList) {

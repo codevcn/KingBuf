@@ -422,6 +422,23 @@
    }
 }
 
+#arrived-cus-modal {
+   .modal-body {
+      .booking-details-title {
+         font-size: 1.2rem;
+         font-weight: bold;
+         border-bottom: 1px gs.$dark-bg solid;
+         padding-bottom: 3px;
+         margin: 0;
+      }
+
+      .form-groups {
+         @include form-groups-styling;
+         margin-bottom: 20px;
+      }
+   }
+}
+
 #confirm-cancel-form {
    @include reject-cancel-styling;
 }
