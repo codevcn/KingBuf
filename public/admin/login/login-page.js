@@ -21,11 +21,11 @@ const validateLoginData = (formData) => {
       password = formData["password"]
 
    if (!username) {
-      toaster.error("Cảnh báo", "Trường username không hợp lệ!")
+      toaster.error("Trường username không được để trống!")
       return false
    }
    if (!password) {
-      toaster.error("Cảnh báo", "Trường mật khẩu không hợp lệ!")
+      toaster.error("Trường mật khẩu không được để trống!")
       return false
    }
 
@@ -43,7 +43,9 @@ const loginAdmin = (e) => {
       authService
          .login(formData)
          .then(() => {
-            window.location.href = "/admin/all-bookings/"
+            toaster.success("Đăng nhập thành công.","",()=>{
+               window.location.href = "/admin/all-bookings/"
+            })
          })
          .catch((error) => {
             toaster.error(extractErrorMessage(error))

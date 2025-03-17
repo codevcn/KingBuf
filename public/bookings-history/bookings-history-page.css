@@ -166,6 +166,9 @@ footer p {
 #main-section .result-section .booking-list .booking-card .card-title .status.approved, #main-section .result-section .booking-list .booking-card .card-title .status.completed {
   background-color: #50cd9f;
 }
+#main-section .result-section .booking-list .booking-card .card-title .status.approved, #main-section .result-section .booking-list .booking-card .card-title .status.arrived {
+  background-color: #7700ff;
+}
 #main-section .result-section .booking-list .booking-card .card-info {
   display: flex;
   justify-content: space-between;

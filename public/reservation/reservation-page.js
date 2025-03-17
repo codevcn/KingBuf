@@ -1,4 +1,5 @@
 const bookingFormEle = document.getElementById("booking-form")
+
 const bookingDetails = document.getElementById("confirm-booking-details")
 
 const formFields = ["full-name", "phone", "date", "time", "adults-count", "children-count", "note"]
@@ -14,7 +15,6 @@ const createFormGroupMessage = (message) => {
 
 const validateBooking = (formData) => {
    let isValid = true
-
    const fullName = formData["full-name"],
       phone = formData["phone"],
       date = formData["date"],
@@ -38,16 +38,17 @@ const validateBooking = (formData) => {
    } else if (!phone || phone.length < 10) {
       warning("phone", "Số điện thoại phải có ít nhất 10 chữ số!")
    }
-   if (date) {
-      const today = dayjs().format("YYYY-MM-DD")
-      if (dayjs(date).isBefore(today, "day")) {
-         warning("date", "Ngày đặt phải từ hôm nay trở đi!")
+   if (date && time) {
+      const now = dayjs() // Thời gian hiện tại
+      const bookingDateTime = dayjs(`${date} ${time}`, "YYYY-MM-DD HH:mm")
+      console.log(now,bookingDateTime)
+      if (bookingDateTime.isBefore(now)) {
+         isValid = false
+         toaster.error("Thời gian đặt phải từ thời điểm hiện tại trở đi!")
       }
    } else {
-      warning("date", "Trường ngày đặt không được để trống!")
-   }
-   if (!time) {
-      warning("time", "Trường giờ đặt không được để trống!")
+      if (!date) warning("date", "Trường ngày đặt không được để trống!")
+      if (!time) warning("time", "Trường giờ đặt không được để trống!")
    }
    if (!adultsCount || !validator.isInt(adultsCount, { min: 1 })) {
       warning("adults-count", "Phải có ít nhất 1 người lớn!")
@@ -108,7 +109,7 @@ const confirmBooking = () => {
          })
       })
       .catch((error) => {
-         toaster.error("Đặt chỗ thất bại", extractErrorMessage(error))
+         toaster.error(extractErrorMessage(error))
       })
       .finally(() => {
          showCofirmBookingLoading(false)
@@ -119,11 +120,13 @@ const init = () => {
    bookingFormEle.addEventListener("submit", submitBooking)
 
    const formFields = bookingFormEle.elements
+   console.log(formFields)
    for (const field of formFields) {
       field.addEventListener("input", (e) => {
          field.closest(".form-group").classList.remove("warning")
       })
    }
+   
 
    bookingDetails.querySelector(".submit-btn").addEventListener("click", confirmBooking)
 }

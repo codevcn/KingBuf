@@ -102,6 +102,9 @@ $tab-darker-border: #dedede;
             &.completed {
                background-color: gs.$success-color;
             }
+            &.arrived {
+               background-color: #7700ff;
+            }
          }
       }
    }

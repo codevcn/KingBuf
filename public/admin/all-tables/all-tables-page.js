@@ -66,7 +66,9 @@ const addNewTable = (e) => {
       tablesService
          .addNewTable(formData)
          .then(() => {
-            reloadPage()
+            toaster.success("Thêm bàn thành công","",()=>{
+               reloadPage()
+            })
          })
          .catch((error) => {
             toaster.error(extractErrorMessage(error))

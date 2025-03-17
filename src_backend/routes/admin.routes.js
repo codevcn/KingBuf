@@ -11,6 +11,6 @@ router.post('/login', adminLogin);
 router.post('/change-password', ensureAuthenticated, changePassword);
 
 // Route đăng xuất
-router.post('/logout', ensureAuthenticated, adminLogout);
+router.get('/logout', ensureAuthenticated, adminLogout);
 
 export default router;

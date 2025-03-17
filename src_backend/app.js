@@ -41,6 +41,34 @@ app.get("/testLogin",(req,res)=>{
   res.json(req?.session?.admin ? req.session.admin : {message:"Not logged in"});
 });
 
+import sequelize from './config/db.js';
+import crypto from 'crypto';
+import Admin from './models/Admin.js';
+app.get('/reset-database', async (req, res) => {
+  try {
+    // Xóa toàn bộ dữ liệu trong database
+    await sequelize.sync({ force: true }); // Dùng `force: true` để xóa toàn bộ bảng và tạo lại
+    console.log("Database reset thành công!");
+    // Thêm admin mẫu
+    const hashedPassword = crypto.createHash('md5').update('123456').digest('hex');
+    await Admin.create({
+      Username: 'admin',
+      PasswordHash: hashedPassword
+    });
+
+    console.log("Admin mặc định đã được thêm!");
+
+    return res.status(200).json({ message: "Database đã được reset và admin mặc định đã thêm!" });
+
+  } catch (error) {
+    console.error("Lỗi khi reset database:", error);
+    return res.status(500).json({ error: "Lỗi khi reset database" });
+  }
+});
+
+
+
+
 // Sử dụng route admin
 app.use('/api/admin', adminRoutes);
 

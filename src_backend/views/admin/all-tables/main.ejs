@@ -22,6 +22,7 @@
         </tr>
       </thead>
       <tbody>
+        
         <% tables.forEach((table)=> { %>
           <tr class="<%= table.Status === 'Maintenance' ? 'maintained' : '' %>">
             <td>
@@ -69,7 +70,7 @@
             </div>
             <div class="form-group capacity">
               <label for="add-table-capacity-input">Sức chứa</label>
-              <input id="add-table-capacity-input" name="capacity" min="1" type="number"
+              <input id="add-table-capacity-input" name="capacity"  type="number"
                 placeholder="Nhập sức chứa của bàn (số người)">
               <div class="message" hidden></div>
             </div>
@@ -132,7 +133,7 @@
             </div>
             <div class="form-group capacity">
               <label for="update-table-capacity-input">Sức chứa</label>
-              <input id="update-table-capacity-input" name="capacity" min="1" type="number"
+              <input id="update-table-capacity-input" name="capacity"  type="number"
                 placeholder="Nhập sức chứa của bàn (số người)">
               <div class="message" hidden></div>
             </div>

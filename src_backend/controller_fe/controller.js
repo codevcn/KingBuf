@@ -39,7 +39,7 @@ export const getBookingsHistoryPage = async (req, res, next) => {
 export const getAdminLoginPage = (req, res, next) => {
    const isAdmin = req.session.admin
    if (isAdmin) {
-      return res.render("admin/login/login-page", { isAdmin: true })
+      return res.redirect("/admin/all-bookings/")
    } else {
       return res.render("admin/login/login-page", { isAdmin: false })
    }

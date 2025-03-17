@@ -113,6 +113,11 @@
                   &.approved, &.completed {
                      background-color: gs.$success-color;
                   }
+                  &.approved,
+
+            &.arrived {
+               background-color: #7700ff;
+            }
                }
             }
 

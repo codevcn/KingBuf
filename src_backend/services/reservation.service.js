@@ -15,13 +15,12 @@ async function reserve(data) {
   }
 
   // Danh sách các trường bắt buộc
-  const requiredFields = ['Cus_FullName', 'Cus_Phone', 'ArrivalTime', 'NumAdults', 'NumChildren'];
+  const requiredFields = ['Cus_FullName', 'Cus_Phone', 'ArrivalTime', 'NumAdults'];
   const errorText = {
     "Cus_FullName": "Họ và tên",
     "Cus_Phone": "Số điện thoại",
     "ArrivalTime": "Thời gian đặt bàn",
     "NumAdults": "Số lượng người lớn",
-    "NumChildren": "Số lượng trẻ em"
   }
 
   // Kiểm tra từng trường
@@ -37,32 +36,32 @@ async function reserve(data) {
     return {
       errorCode: 400, message: 'Số lượng người lớn phải lớn hơn hoặc bằng 1.'
     };
+  if (!data.NumChildren){
+    data.NumChildren = 0
+  }
   if (!isIntegerString(data.NumChildren))
     return {
       errorCode: 400, message: 'Số lượng trẻ em phải lớn hơn hoặc bằng 0.'
     };
-  try {
+  try { 
     // Chuyển đổi ArrivalTime thành đối tượng Date
-    const arrivalTime = new Date(data.ArrivalTime);
+    const arrivalTime = dayjs(data.ArrivalTime)
+    const oneHourBefore = arrivalTime.subtract(1, "hour")
+    const oneHourAfter = arrivalTime.add(1, "hour")
 
-    // Lấy thời điểm 15 phút trước đó
-    const fifteenMinutesAgo = new Date(arrivalTime);
-    fifteenMinutesAgo.setMinutes(fifteenMinutesAgo.getMinutes() - 15);
-
-    // Kiểm tra xem có đơn nào của cùng số điện thoại trong vòng 15 phút trước không
-    const recentReservation = await Reservation.findOne({
+    // Kiểm tra xem có đơn nào trong khoảng thời gian 1 giờ trước & sau không
+    const conflictingReservation = await Reservation.findOne({
       where: {
         Cus_Phone: data.Cus_Phone,
         ArrivalTime: {
-          [Op.between]: [fifteenMinutesAgo, arrivalTime] // Kiểm tra khoảng thời gian 15 phút trước
+            [Op.between]: [oneHourBefore.toDate(), oneHourAfter.toDate()] // Kiểm tra khoảng thời gian ±1h
         }
       }
-    });
-
-    if (recentReservation) {
-      return { errorCode: 409, message: 'Bạn chỉ có thể đặt chỗ sau 15 phút từ lần đặt trước.' };
-    }
-
+    })
+    console.log("tick",arrivalTime,data.ArrivalTime,conflictingReservation)
+    if (conflictingReservation) {
+      return { errorCode: 409, message: "Bạn chỉ có thể đặt chỗ cách nhau ít nhất 1 giờ." }
+   }
 
     const reservation = await Reservation.create({
       Cus_FullName: data.Cus_FullName,
@@ -551,6 +550,11 @@ async function updateReservation(data) {
 
     // Cập nhật vào DB
     await reservation.update(updateData);
+    if (updateData.Status === "Cancelled"){
+      await ReservationTable.destroy({
+        where: { ReservationID: data.ReservationID }
+      });
+    }
     return { success: true, message: "Cập nhật thành công.", data: reservation };
 
   } catch (error) {

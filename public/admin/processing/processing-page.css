@@ -145,6 +145,9 @@ footer p {
 #booking-details .details .booking-id .status.approved, #booking-details .details .booking-id .status.completed {
   background-color: #50cd9f;
 }
+#booking-details .details .booking-id .status.arrived {
+  background-color: #7700ff;
+}
 
 #update-booking-form .form-groups {
   display: flex;

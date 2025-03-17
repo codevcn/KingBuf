@@ -22,7 +22,13 @@
           <div class="status approved">Đã duyệt</div>
           <% } else if (Status === 'Cancelled') { %>
           <div class="status cancelled">Đã hủy</div>
-          <% } else { %>
+            <% } else if (Status === 'Arrived') { %>
+              <div class="status arrived">Khách đã đến</div>
+              <% } else if (Status === 'Completed') { %>
+                <div class="status completed">Đã hoàn thành</div>
+
+              <% } else { %>
+              
           <div class="status rejected">Đã từ chối</div>
           <% } %>
         </div>
