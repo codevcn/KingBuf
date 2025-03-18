@@ -35,7 +35,7 @@ const filterBookings = (e) => {
 const getBookingId = (submitBtn) =>
    submitBtn.closest(".booking-card").getAttribute("data-kb-booking-id")
 
-const completeBooking = (e) => {
+const approveBooking = (e) => {
    e.preventDefault()
    const submitBtn = e.currentTarget
    const backupContent = e.target.innerHTML
