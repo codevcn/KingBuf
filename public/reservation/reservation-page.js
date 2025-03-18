@@ -12,7 +12,15 @@ const createFormGroupMessage = (message) => {
       <span>${message}</span>`
    return messageEle
 }
+function isValidFullName(username) {
+   // Kiểm tra nếu rỗng hoặc không phải là chuỗi
+   if (!username || typeof username !== "string") return false;
 
+   // Biểu thức chính quy kiểm tra họ và tên hợp lệ
+   const regex = /^[A-ZÀ-Ỹ][a-zà-ỹ]*(?: [A-ZÀ-Ỹ][a-zà-ỹ]*)*$/;
+
+   return regex.test(username.trim());
+}
 const validateBooking = (formData) => {
    let isValid = true
    const fullName = formData["full-name"],
@@ -33,19 +41,28 @@ const validateBooking = (formData) => {
    if (!fullName) {
       warning("full-name", "Trường họ và tên không được để trống!")
    }
+   if(fullName&&!isValidFullName(fullName)){
+      warning("full-name", "Trường họ và tên không hợp lệ!")
+   }
    if (phone && !validator.isMobilePhone(phone)) {
       warning("phone", "Số điện thoại không hợp lệ!")
-   } else if (!phone || phone.length < 10) {
-      warning("phone", "Số điện thoại phải có ít nhất 10 chữ số!")
+   } else if (!phone) {
+      warning("phone", "Số điện thoại không được để trống!")
    }
    if (date && time) {
+      dayjs.extend(dayjs_plugin_customParseFormat);
       const now = dayjs() // Thời gian hiện tại
-      const bookingDateTime = dayjs(`${date} ${time}`, "YYYY-MM-DD HH:mm")
-      console.log(now,bookingDateTime)
+      console.log(`${date} ${time}`)
+      const bookingDateTime = dayjs(`${date} ${time}`, "DD/MM/YYYY HH:mm");
+      const maxBookingDate = now.add(2, 'month');
+      console.log(bookingDateTime,now)
       if (bookingDateTime.isBefore(now)) {
-         isValid = false
-         toaster.error("Thời gian đặt phải từ thời điểm hiện tại trở đi!")
-      }
+         isValid = false;
+         toaster.error("Thời gian đặt phải từ thời điểm hiện tại trở đi!");
+     } else if (bookingDateTime.isAfter(maxBookingDate)) {
+         isValid = false;
+         toaster.error("Thời gian đặt không được quá 2 tháng kể từ thời điểm hiện tại!");
+     }
    } else {
       if (!date) warning("date", "Trường ngày đặt không được để trống!")
       if (!time) warning("time", "Trường giờ đặt không được để trống!")

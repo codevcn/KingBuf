@@ -10,7 +10,7 @@ class BookingService {
          NumChildren: formData["children-count"],
          Note: formData["note"],
       })
-   }
+   }   
 
    async updateBooking(bookingId, formData) {
       const { data } = await clientAxios.put(`/api/reservations/update/${bookingId}`, {

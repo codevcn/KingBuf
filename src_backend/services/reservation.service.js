@@ -5,9 +5,39 @@ import sequelize from '../config/db.js';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone.js';
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 //1. Đặt chỗ
+function convertDateTime(inputDateTime) {
+  // Tách phần ngày và giờ từ chuỗi đầu vào
+  const parts = inputDateTime.split(" ");
+  if (parts.length !== 2) {
+      return "Định dạng không hợp lệ!";
+  }
+
+  const datePart = parts[0]; // dd/mm/yyyy
+  const timePart = parts[1]; // HH:mm
+
+  // Kiểm tra xem chuỗi ngày có đúng định dạng "dd/mm/yyyy" không
+  const dateRegex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])\/\d{4}$/;
+  if (!dateRegex.test(datePart)) {
+      return "Ngày không hợp lệ!";
+  }
+
+  // Tách ngày, tháng, năm
+  const [day, month, year] = datePart.split("/");
+
+  // Kiểm tra xem chuỗi giờ có đúng định dạng "HH:mm" không
+  const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+  if (!timeRegex.test(timePart)) {
+      return "Giờ không hợp lệ!";
+  }
+
+  // Chuyển đổi sang định dạng "yyyy-mm-dd HH:mm"
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')} ${timePart}`;
+}
+
 async function reserve(data) {
   // Kiểm tra xem data có phải là đối tượng hợp lệ không
   if (!data || typeof data !== 'object') {
@@ -45,7 +75,8 @@ async function reserve(data) {
     };
   try { 
     // Chuyển đổi ArrivalTime thành đối tượng Date
-    const arrivalTime = dayjs(data.ArrivalTime)
+    data.ArrivalTime = convertDateTime(data.ArrivalTime)
+    const arrivalTime = dayjs(data.ArrivalTime);
     const oneHourBefore = arrivalTime.subtract(1, "hour")
     const oneHourAfter = arrivalTime.add(1, "hour")
 
