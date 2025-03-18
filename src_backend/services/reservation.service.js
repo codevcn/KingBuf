@@ -256,7 +256,7 @@ async function rejectReservation(data) {
   }
 
   // Danh sách các trường bắt buộc
-  const requiredFields = ['ReservationID', 'reject_reason'];
+  const requiredFields = ['ReservationID'];
   const errorText = {
     "ReservationID": "Mã đặt bàn",
     "reject_reason": "Lý do từ chối",

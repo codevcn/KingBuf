@@ -179,10 +179,6 @@ const showConfirmCompleteBookingModal = (e) => {
 const getBookingIdFromBtn = (submitBtn) => submitBtn.getAttribute("data-kb-booking-id")
 
 const validateReason = (reason) => {
-   if (!reason) {
-      toaster.error("Xử lý đơn thất bại", "Trường lý do không được bỏ trống.")
-      return false
-   }
    return true
 }
 
