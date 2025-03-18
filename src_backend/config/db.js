@@ -36,6 +36,6 @@ const syncDatabase = async () => {
 };
 
 // Gọi hàm đồng bộ
-// syncDatabase();
+syncDatabase();
 
 export default sequelize;
