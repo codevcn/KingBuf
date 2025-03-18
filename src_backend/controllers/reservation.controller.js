@@ -1,4 +1,4 @@
-import { reserve, getReservationsByUserInfo, getAllReservation, rejectReservation,assignReservationToTable, updateReservation} from '../services/reservation.service.js';
+import { reserve, getReservationsByUserInfo, getAllReservation, rejectReservation, updateReservationStatus} from '../services/reservation.service.js';
 
 //1. Đặt chỗ
 async function addReservation(req, res) {
@@ -82,33 +82,13 @@ async function rejectReservationCtrl(req,res) {
   }
 }
 
-// 5. gán đơn đặt chỗ vô bàn
-async function assignReservationToTableCtrl(req, res) {
-  // Lấy reservationID và tableID từ req.body
-  let { reservationID, tableIDList } = req.body;
-  console.log(req.body);
-  const adminID = req.session.admin.id;
-  
-  if (!reservationID || !tableIDList) {
-    return res.status(400).json({ message: "Thiếu thông tin: reservationID hoặc tableID." });
-  }
-  
-  const result = await assignReservationToTable(reservationID, tableIDList, adminID);
-  if (result.errorCode) {
-    return res.status(result.errorCode).json({ message: result.message });
-  }
-  
-  return res.status(200).json({
-    message: "Gán đơn đặt chỗ vào bàn thành công.",
-    assignment: result
-  });
-}
+
 
 async function updateReservationCtrl(req, res) {
   try {
     const reservationID = req.params.id;
-    const updateData = { ...req.body, ReservationID: reservationID };
-    const result = await updateReservation(updateData);
+    // const updateData = { ...req.body, ReservationID: reservationID };
+    const result = await updateReservationStatus(reservationID,req.body.Status);
     if (result.errorCode) {
       return res.status(result.errorCode).json({ message: result.message });
     }
@@ -123,4 +103,4 @@ async function updateReservationCtrl(req, res) {
   }
 }
 
-export {addReservation, getReservationsByUserInfoCtrl, getAllReservationCtrl, rejectReservationCtrl, assignReservationToTableCtrl, updateReservationCtrl};
+export {addReservation, getReservationsByUserInfoCtrl, getAllReservationCtrl, rejectReservationCtrl, updateReservationCtrl};

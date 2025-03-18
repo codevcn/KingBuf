@@ -27,13 +27,13 @@ class BookingService {
 const bookingService = new BookingService()
 
 class ProcessBookingService {
-   async approveBooking(bookingId, tableIds) {
-      const tableIDList = tableIds.map(x => parseInt(x));
-      await clientAxios.post(`/api/reservations/assign`, {
-         reservationID: bookingId,
-         tableIDList:tableIDList
-      })
-   } 
+   // async approveBooking(bookingId, tableIds) {
+   //    const tableIDList = tableIds.map(x => parseInt(x));
+   //    await clientAxios.post(`/api/reservations/assign`, {
+   //       reservationID: bookingId,
+   //       tableIDList:tableIDList
+   //    })
+   // } 
 
    async rejectBooking(bookingId, reason) {
       await clientAxios.post(`/api/reservations/rejectReservation/${bookingId}`, {
@@ -47,9 +47,9 @@ class ProcessBookingService {
       })
    }
 
-   async completeBooking(bookingId) {
+   async approveBooking(bookingId) {
       await clientAxios.put(`/api/reservations/update/${bookingId}`, {
-         Status: "Completed"
+         Status: "Approved"
       })
    }
    async arrivedCustomer(bookingId) {

@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { Reservation, ReservationTable, DiningTable } from '../models/index.js';
+import { Reservation } from '../models/index.js';
 import { validatePhoneNumber, isPositiveIntegerString, isIntegerString } from '../utils/validation.js';
 import sequelize from '../config/db.js';
 import dayjs from 'dayjs';
@@ -105,20 +105,7 @@ async function getReservationsByUserInfo(data) {
       where: {
         Cus_Phone: data.Cus_Phone,
         Cus_FullName: data.Cus_FullName
-      },
-      include: [
-        {
-          model: ReservationTable,
-          as: 'reservationTable',
-          include: [
-            {
-              model: DiningTable,
-              as: 'diningTable',
-              attributes: ['TableNumber']
-            }
-          ]
-        }
-      ]
+      }
     });
 
     // Dùng Map để gom nhóm theo ReservationID
@@ -137,28 +124,12 @@ async function getReservationsByUserInfo(data) {
           NumAdults: reservation.NumAdults,
           NumChildren: reservation.NumChildren,
           Note: reservation.Note,
-          Status: reservation.Status,
-          TablesList: []
+          Status: reservation.Status
         });
       }
 
-      // Lấy object từ Map
-      const existingReservation = reservationMap.get(reservationID);
 
-      // Nếu có reservationTable, lấy danh sách bàn
-      if (reservation.reservationTable) {
-        const tables = Array.isArray(reservation.reservationTable)
-          ? reservation.reservationTable
-          : [reservation.reservationTable]; // Chuyển thành mảng nếu là object
-
-        tables.forEach(rt => {
-          if (rt.diningTable && rt.diningTable.TableNumber) {
-            existingReservation.TablesList.push({ TableNumber: rt.diningTable.TableNumber });
-          }
-        });
-      }
     });
-
     // Chuyển Map về mảng kết quả
     return Array.from(reservationMap.values());
   } catch (error) {
@@ -211,20 +182,7 @@ async function getAllReservation({ReservationID, Status, Cus_Phone, timeRange, d
     }
 
 
-    const reservations = await Reservation.findAll({ where: whereCondition,
-      include: [
-        {
-          model: ReservationTable,
-          as: 'reservationTable',
-          include: [
-            {
-              model: DiningTable,
-              as: 'diningTable',
-              attributes: ['TableNumber']
-            }
-          ]
-        }
-      ]
+    const reservations = await Reservation.findAll({ where: whereCondition
     });
 
     // Dùng Map để gom nhóm theo ReservationID
@@ -244,26 +202,11 @@ async function getAllReservation({ReservationID, Status, Cus_Phone, timeRange, d
           NumChildren: reservation.NumChildren,
           Note: reservation.Note,
           Status: reservation.Status,
-          reject_reason: reservation.reject_reason,
-          TablesList: []
+          reject_reason: reservation.reject_reason
         });
       }
 
-      // Lấy object từ Map
-      const existingReservation = reservationMap.get(reservationID);
-
-      // Nếu có reservationTable, lấy danh sách bàn
-      if (reservation.reservationTable) {
-        const tables = Array.isArray(reservation.reservationTable)
-          ? reservation.reservationTable
-          : [reservation.reservationTable]; // Chuyển thành mảng nếu là object
-
-        tables.forEach(rt => {
-          if (rt.diningTable && rt.diningTable.TableNumber) {
-            existingReservation.TablesList.push({ TableNumber: rt.diningTable.TableNumber });
-          }
-        });
-      }
+     
     });
 
     // Chuyển Map về mảng kết quả
@@ -313,256 +256,33 @@ async function rejectReservation(data) {
     return { errorCode: 500, message: error.message };
   }
 }
-// 5. gán đơn đặt chỗ vô bàn
 
-async function assignReservationToTable(reservationID, tableIDList, adminID) {
-  const transaction = await sequelize.transaction(); // Mở transaction
+const updateReservationStatus = async (reservationId, newStatus, rejectReason = null) => {
   try {
-    // Kiểm tra đơn đặt
-    const reservation = await Reservation.findByPk(reservationID, { transaction });
+    const reservation = await Reservation.findByPk(reservationId);
+    console.log(">>> sta:",newStatus)
     if (!reservation) {
-      await transaction.rollback();
-      return { errorCode: 404, message: "Đơn đặt chỗ không tồn tại." };
-    }
-    if (reservation.Status === "Rejected") {
-      await transaction.rollback();
-      return { errorCode: 400, message: "Đơn đặt chỗ đã bị từ chối." };
+      return {errorCode:404,message:'Reservation not found'}
     }
 
-    // Nếu danh sách bàn rỗng, chỉ cần xóa bàn cũ rồi return
-    if (!tableIDList || tableIDList.length === 0) {
-      await ReservationTable.destroy({
-        where: { ReservationID: reservationID },
-        transaction
-      });
-      await transaction.commit();
-      return { success: true, message: "Đã xóa toàn bộ bàn khỏi đơn đặt." };
+    // Kiểm tra nếu trạng thái mới hợp lệ
+    const validStatuses = ['Pending', 'Cancelled', 'Approved', 'Completed', 'Arrived', 'Rejected'];
+    if (!validStatuses.includes(newStatus)) {
+      return {errorCode:400,message:'Invalid status value'}
     }
 
-    // Tổng số người trong đơn đặt
-    const totalGuests = reservation.NumAdults + reservation.NumChildren;
-
-    // Lấy thông tin bàn & kiểm tra sức chứa
-    let totalCapacity = 0;
-    const unavailableTables = [];
-
-    for (const tableID of tableIDList) {
-      const table = await DiningTable.findByPk(tableID, { transaction });
-      if (!table) {
-        unavailableTables.push({ tableID, reason: "Bàn ăn không tồn tại." });
-        continue;
-      }
-      if (table.Status === "Maintenance") {
-        unavailableTables.push({ tableID, reason: "Bàn ăn đang bảo trì." });
-        continue;
-      }
-
-      totalCapacity += table.Capacity;
-    }
-
-    // Kiểm tra nếu tổng sức chứa nhỏ hơn số khách
-    if (totalCapacity < totalGuests) {
-      await transaction.rollback();
-      return { errorCode: 400, message: "Tổng số ghế của các bàn không đủ chỗ cho đơn đặt." };
-    }
-
-    // Xóa các bản ghi không thuộc danh sách bàn mới
-    await ReservationTable.destroy({
-      where: { ReservationID: reservationID },
-      transaction
+    // Cập nhật status và reject_reason nếu cần
+    await reservation.update({
+      Status: newStatus,
+      reject_reason: newStatus === 'Rejected' ? rejectReason : null
     });
 
-    // Kiểm tra xung đột thời gian
-    const newArrivalTime = new Date(reservation.ArrivalTime);
-    const twelveHoursInMs = 12 * 60 * 60 * 1000;
-
-    for (const tableID of tableIDList) {
-      const existingAssignments = await ReservationTable.findAll({
-        where: { TableID: tableID },
-        include: [{ model: Reservation, as: 'reservation', required: true }],
-        transaction
-      });
-
-      let conflict = false;
-      for (let assignment of existingAssignments) {
-        const existingArrivalTime = new Date(assignment.reservation.ArrivalTime);
-        if (Math.abs(newArrivalTime - existingArrivalTime) < twelveHoursInMs) {
-          unavailableTables.push({ tableID, reason: "Bàn không trống vào thời gian này." });
-          conflict = true;
-          break;
-        }
-      }
-      if (conflict) continue;
-
-      // Gán bàn cho đơn đặt
-      await ReservationTable.create({ ReservationID: reservationID, TableID: tableID, AdminID: adminID }, { transaction });
-      const result = await Reservation.update(
-          { Status: 'Approved' }, // Giá trị cần cập nhật
-          { where: { ReservationID: reservationID }, transaction } // Điều kiện
-      );
-    }
-
-    if (unavailableTables.length > 0) {
-      await transaction.rollback();
-      return { errorCode: 400, message: unavailableTables };
-    }
-
-    await transaction.commit();
-    return { success: true, message: "Gán bàn thành công." };
-  } catch (error) {
-    await transaction.rollback();
-    console.error("Lỗi khi gán bàn:", error);
-    return { errorCode: 500, message: "Lỗi hệ thống, vui lòng thử lại." };
-  }
-}
-
-async function updateReservation(data) {
-  if (!data || typeof data !== 'object') {
-    return { errorCode: 400, message: "Dữ liệu đầu vào không hợp lệ." };
-  }
-
-  const requiredFields = ['ReservationID'];
-  const errorText = { "ReservationID": "Mã đặt bàn" };
-
-  for (let field of requiredFields) {
-    if (data[field] === undefined || data[field] === null || data[field] === '') {
-      return { errorCode: 400, message: `Thiếu thông tin: ${errorText[field]}` };
-    }
-  }
-  //id đơn, số người lớn, số trẻ em, thời gian đến
-  try {
-    const reservation = await Reservation.findByPk(data.ReservationID);
-    if (!reservation) {
-      return { errorCode: 404, message: "Đơn đặt chỗ không tồn tại." };
-    }
-    if (reservation.Status === "Rejected") {
-      return { errorCode: 400, message: "Đơn đặt chỗ đã bị từ chối." };
-    }
-    if (reservation.Status === "Cancelled") {
-      return { errorCode: 400, message: "Đơn đặt chỗ đã bị hủy." };
-    }
-    if (reservation.Status === "Completed") {
-      return { errorCode: 400, message: "Đơn đặt chỗ đã hoàn thành." };
-    }
-
-    let updateData = {};
-    let hasChanges = false;
-
-    // Kiểm tra xem có bàn nào được gán chưa
-    const assignedTables = await ReservationTable.findAll({
-      where: { ReservationID: reservation.ReservationID },
-      include: [{ model: DiningTable, as: 'diningTable', attributes: ['Capacity'] }]
-    });
-    console.log(assignedTables)
-    const hasAssignedTables = assignedTables.length > 0;
-    data.NumAdults = parseInt(data.NumAdults);
-    data.NumChildren = parseInt(data.NumChildren);
-
-    if (isNaN(data.NumAdults)) {
-      data.NumAdults = reservation.NumAdults;
-  }
-  if (isNaN(data.NumChildren)) {
-      data.NumChildren = reservation.NumChildren;
-  }
-  
-    // Kiểm tra và cập nhật NumAdults, NumChildren
-    if (data.NumAdults || data.NumChildren) {
-
-      const totalNewPeople = (data.NumAdults ?? reservation.NumAdults) + (data.NumChildren ?? reservation.NumChildren);
-
-      if (hasAssignedTables) {
-        // Tính tổng số người tối đa có thể chứa từ các bàn đã gán
-        const maxPeopleAllowed = assignedTables.reduce((sum, table) => sum + table.diningTable.Capacity, 0);
-
-        if (totalNewPeople > maxPeopleAllowed) {
-          return { errorCode: 400, message: "Tổng số người vượt quá sức chứa tối đa của bàn." };
-        }
-      }
-
-      if (data.NumAdults !== reservation.NumAdults || data.NumChildren !== reservation.NumChildren) {
-        updateData.NumAdults = data.NumAdults ?? reservation.NumAdults;
-        updateData.NumChildren = data.NumChildren ?? reservation.NumChildren;
-        hasChanges = true;
-      }
-    }
-
-    // Kiểm tra và cập nhật ArrivalTime
-    if (data.ArrivalTime !== undefined) {
-      const newArrivalTime = dayjs(data.ArrivalTime);
-      const now = dayjs().tz('Asia/Ho_Chi_Minh');
-
-      if (newArrivalTime.isBefore(now)) {
-        return { errorCode: 400, message: "Thời gian đặt bàn không thể ở quá khứ." };
-      }
-
-      // Kiểm tra trùng lịch bàn (nếu có bàn đã được gán)
-      if (hasAssignedTables) {
-        const hasConflict = await ReservationTable.findOne({
-          where: { ReservationID: reservation.ReservationID },
-          include: [{
-            model: Reservation,
-            as: 'reservation',
-            where: {
-              ArrivalTime: {
-                [Op.between]: [
-                  new Date(newArrivalTime.valueOf() - 12 * 60 * 60 * 1000),
-                  new Date(newArrivalTime.valueOf() + 12 * 60 * 60 * 1000)
-                ]
-              },
-              Status: { [Op.not]: "Completed" }
-            }
-          }]
-        });
-
-        if (hasConflict) {
-          return { errorCode: 400, message: "Bàn đã được đặt trong khoảng thời gian này." };
-        }
-      }
-
-      if (data.ArrivalTime !== reservation.ArrivalTime) {
-        console.log("tick",data.ArrivalTime,reservation.ArrivalTime)
-        updateData.ArrivalTime = data.ArrivalTime;
-        hasChanges = true;
-      }
-    }
-    // Kiểm tra và cập nhật các trường khác
-    if (data.Cus_FullName !== undefined && data.Cus_FullName !== reservation.Cus_FullName) {
-      console.log("tick",data.Cus_FullName)
-      updateData.Cus_FullName = data.Cus_FullName;
-      hasChanges = true;
-    }
-
-    if (data.Note !== undefined && data.Note !== reservation.Note) {
-      console.log("tick",data.Note)
-      updateData.Note = data.Note;
-      hasChanges = true;
-    }
-
-    if (data.Status !== undefined && data.Status !== reservation.Status) {
-      console.log("tick",data.Status)
-      updateData.Status = data.Status;
-      hasChanges = true;
-    }
-    // Nếu không có thay đổi, báo không có dữ liệu cần cập nhật
-    if (!hasChanges) {
-      return { errorCode: 400, message: "Không có dữ liệu nào thay đổi." };
-    }
-
-    // Cập nhật vào DB
-    await reservation.update(updateData);
-    if (updateData.Status === "Cancelled"){
-      await ReservationTable.destroy({
-        where: { ReservationID: data.ReservationID }
-      });
-    }
+    console.log('>>> Status updated successfully');
     return { success: true, message: "Cập nhật thành công.", data: reservation };
-
   } catch (error) {
-    console.log(error);
-    return { errorCode: 500, message: error.message };
+    console.error('>>> Error updating status:', error);
+    return {errorCode:500,message:error.message}
   }
-}
+};
 
-
-
-export { reserve, getReservationsByUserInfo, getAllReservation, rejectReservation, assignReservationToTable, updateReservation };
+export { reserve, getReservationsByUserInfo, updateReservationStatus,getAllReservation, rejectReservation };

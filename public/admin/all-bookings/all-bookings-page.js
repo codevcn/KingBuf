@@ -41,7 +41,7 @@ const approveBooking = (e) => {
    const backupContent = e.target.innerHTML
    submitBtn.innerHTML = createLoading()
    processBookingService
-      .completeBooking(getBookingIdFromBtn(submitBtn))
+      .approveBooking(getBookingIdFromBtn(submitBtn))
       .then(() => {
          toaster.success("Hoàn thành đơn thành công.", "", () => {
             reloadPage()

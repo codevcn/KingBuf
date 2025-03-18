@@ -35,7 +35,6 @@ app.use("/", routes)
 // Import route
 import adminRoutes from './routes/admin.routes.js';
 import reservationRoutes from './routes/reservation.routes.js';
-import diningTableRoutes from './routes/table.routes.js';
 
 app.get("/testLogin",(req,res)=>{
   res.json(req?.session?.admin ? req.session.admin : {message:"Not logged in"});
@@ -75,8 +74,6 @@ app.use('/api/admin', adminRoutes);
 // Sử dụng route reservations
 app.use('/api/reservations', reservationRoutes);
 
-// Sử dụng route diningTables
-app.use('/api/diningTable', diningTableRoutes);
 
 
 app.use((err, req, res, next) => {
